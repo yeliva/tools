@@ -343,7 +343,8 @@
             </div>
         </div>
     </div>
-<script>
+
+   <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Simpan konfigurasi dan instance Flatpickr di variabel
             const flatpickrConfig = {
@@ -351,9 +352,6 @@
                 defaultDate: "today"
             };
             let flatpickrInstance = flatpickr("#invoice-date", flatpickrConfig);
-
-            // --- PERUBAHAN DIMULAI DI SINI ---
-            let originalTitle = document.title; // 1. Simpan judul asli halaman
 
             function formatRupiah(angka) {
                 if(isNaN(angka) || angka === 0) return '';
@@ -442,20 +440,14 @@
             
             calculateTotal();
             
+            // === LOGIKA BARU UNTUK PRINT ===
             window.addEventListener('beforeprint', () => {
-                // 2. Ambil nama pelanggan dari input field
-                const clientNameInput = document.getElementById('client-name');
-                let clientName = clientNameInput.value.trim().replace(/[\/\\?%*:|"<>]/g, ''); // Membersihkan karakter ilegal
-
-                // 3. Set judul dokumen baru jika nama pelanggan ada
-                if (clientName) {
-                    document.title = `Faktur_Roviana Printing_${clientName}`;
-                }
-
+                // Hancurkan (disable) Flatpickr
                 if (flatpickrInstance) {
                     flatpickrInstance.destroy();
                 }
 
+                // Sembunyikan baris DP jika kosong
                 const uangMukaValue = parseRupiah(document.getElementById('uang-muka').value) || 0;
                 if (uangMukaValue === 0) {
                     document.getElementById('dp-row').classList.add('sembunyikan-saat-cetak');
@@ -464,11 +456,10 @@
             });
 
             window.addEventListener('afterprint', () => {
-                // 4. Kembalikan judul ke asli setelah cetak
-                document.title = originalTitle;
-
+                // Buat kembali Flatpickr setelah selesai cetak
                 flatpickrInstance = flatpickr("#invoice-date", flatpickrConfig);
 
+                // Tampilkan kembali baris DP
                 document.getElementById('dp-row').classList.remove('sembunyikan-saat-cetak');
                 document.getElementById('sisa-row').classList.remove('sembunyikan-saat-cetak');
             });
