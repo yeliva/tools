@@ -352,6 +352,23 @@
                 defaultDate: "today"
             };
             let flatpickrInstance = flatpickr("#invoice-date", flatpickrConfig);
+            // --- LOGIKA BARU UNTUK MENGUBAH JUDUL SECARA REAL-TIME ---
+            const clientNameInput = document.getElementById('client-name');
+            const originalTitle = document.title;
+
+            clientNameInput.addEventListener('input', function() {
+                // Ambil nama pelanggan dan bersihkan karakter ilegal untuk nama file
+                let clientName = this.value.trim().replace(/[\/\\?%*:|"<>]/g, '');
+
+                if (clientName) {
+                    // Jika ada nama, update judul dokumen
+                    document.title = `Faktur_Roviana Printing_${clientName}`;
+                } else {
+                    // Jika kolom nama kosong, kembalikan ke judul asli
+                    document.title = originalTitle;
+                }
+            });
+            // --- AKHIR LOGIKA BARU ---
 
             function formatRupiah(angka) {
                 if(isNaN(angka) || angka === 0) return '';
