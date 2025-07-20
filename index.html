@@ -21,7 +21,7 @@
             padding: 2rem;
         }
         .invoice-container {
-            width: 1123px; /* Perkiraan lebar A4 landscape (297mm) */
+            width: 1123px;
             background: #fff;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             display: flex;
@@ -61,7 +61,7 @@
         .main-table th, .main-table td {
             border: 1px solid #d1d5db;
             padding: 8px;
-            height: 23px; /* Tinggi baris sesuai permintaan */
+            height: 23px;
             box-sizing: content-box;
         }
         .main-table th {
@@ -82,14 +82,11 @@
         .summary-table {
             width: 100%;
         }
-        /* Kode CSS Baru untuk Summary Table */
 .summary-table td {
     padding: 6px;
     font-size: 0.875rem;
     
 }
-
-/* Menyesuaikan tampilan input agar seperti teks biasa */
 #uang-muka {
     border: none;
     background-color: transparent;
@@ -99,18 +96,15 @@
     outline: none;
 }
         }
-
-        /* === CSS KHUSUS UNTUK MENCETAK === */
         @page {
-            size: A4 landscape; /* Ukuran standar agar tidak terpotong, skala diatur oleh browser */
+            size: A4 landscape;
             margin: 1cm;
         }
-
         @media print {
             body {
                 background-color: #fff;
                 padding: 0;
-                display: block; /* Menghapus centering flexbox */
+                display: block;
                 min-height: initial;
             }
             .invoice-container {
@@ -142,104 +136,89 @@
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
     }
-
-    /* BARIS BARU UNTUK CONTAINER SUMMARY TABLE */
-    /* Menargetkan div dengan kelas bg-gray-50 di dalam footer */
     footer .bg-gray-50 {
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
     }
  }
- /* === CSS KHUSUS UNTUK TAMPILAN MOBILE === */
 @media (max-width: 480px) {
-
-    /* 1. Atur Ulang Layout Dasar */
     body {
         padding: 0;
-        align-items: flex-start; /* Hentikan centering vertikal */
+        align-items: flex-start;
     }
     .invoice-container {
         width: 100%;
         height: auto;
         min-height: 100vh;
-        box-shadow: none; /* Hilangkan bayangan di mobile */
+        box-shadow: none;
     }
     .invoice-body {
-        padding: 15px; /* Perkecil padding di mobile */
+        padding: 15px;
     }
-
-    /* 2. Susun Ulang Header */
     header.flex {
-        flex-direction: column; /* Tumpuk logo dan info pelanggan */
+        flex-direction: column;
         align-items: flex-start;
-        gap: 20px; /* Beri jarak antara logo dan info */
+        gap: 20px;
     }
     header img {
-        width: 60%; /* Buat logo lebih kecil */
+        width: 60%;
         max-width: 250px;
     }
     header > div:last-child {
-        width: 100%; /* Pastikan info pelanggan mengambil lebar penuh */
-    }
-    .dotted-input-container label {
-        width: 80px; /* Perkecil lebar label */
-    }
-
-    /* 3. Judul Faktur */
-    h1.text-xl {
-        text-align: center; /* Pindahkan judul ke tengah */
         width: 100%;
     }
-
-    /* 4. Ubah Tabel Menjadi Kartu */
+    .dotted-input-container label {
+        width: 80px;
+    }
+    h1.text-xl {
+        text-align: center;
+        width: 100%;
+    }
     .main-table thead {
-        display: none; /* Sembunyikan header tabel asli */
+        display: none;
     }
     .main-table tr {
-        display: block; /* Setiap baris menjadi blok terpisah */
+        display: block;
         border: 1px solid #ddd;
         border-radius: 8px;
         margin-bottom: 15px;
         padding: 10px;
     }
     .main-table td {
-        display: flex; /* Gunakan flex untuk mensejajarkan label dan input */
+        display: flex;
         justify-content: space-between;
         align-items: center;
         width: 100%;
         border: none;
-        border-bottom: 1px solid #eee; /* Beri garis pemisah antar properti */
+        border-bottom: 1px solid #eee;
         padding: 10px 5px;
-        text-align: right; /* Pindahkan isi ke kanan */
+        text-align: right;
     }
     .main-table td:last-child {
-        border-bottom: none; /* Hapus garis di item terakhir */
+        border-bottom: none;
     }
     .main-table td::before {
-        content: attr(data-label); /* Ambil teks dari data-label */
+        content: attr(data-label);
         font-weight: bold;
         text-align: left;
         padding-right: 10px;
     }
     .main-table td input {
-        width: 50%; /* Batasi lebar input di mobile */
+        width: 50%;
     }
     .main-table td.total {
          font-weight: bold;
     }
-
-
-    /* 5. Susun Ulang Footer Konten */
     footer.flex {
-        flex-direction: column-reverse; /* Balik urutan, summary di atas */
+        flex-direction: column-reverse;
         align-items: flex-start;
         gap: 30px;
     }
     footer > div {
-        width: 100% !important; /* Gunakan lebar penuh */
+        width: 100% !important;
     }
     .mt-16 {
-        margin-top: 1rem; /* Kurangi jarak pada 'Hormat Kami' */
+        margin-top: 1rem;
     }
 }
     </style>
@@ -247,8 +226,6 @@
 <body>
     <div class="invoice-container">
         <div class="invoice-body">
-             
-            <!-- Header -->
             <header class="flex justify-between items-start mb-8">
                 <div class="flex flex-col items-start"> <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/logo_nama_rp.png" alt="Logo Roviana Printing" width="304">
     
@@ -260,7 +237,6 @@
 
 </div>
                 <div>
-                    <!-- Judul Faktur -->
             <h1 class="text-3xl font-semibold text-gray-700 mb-2">FAKTUR PESANAN</h1>
                     <div class="dotted-input-container">
                         <label for="client-name">Kepada Yth,</label>
@@ -278,7 +254,6 @@
                 </div>
             </header>
 
-            <!-- Tabel Utama -->
             <main>
                 <table class="main-table">
                     <thead>
@@ -291,7 +266,6 @@
                         </tr>
                     </thead>
                     <tbody id="invoice-items">
-                        <!-- Baris ditambahkan oleh JS -->
                     </tbody>
                 </table>
                 <div class="table-controls mt-4 flex space-x-2">
@@ -304,7 +278,6 @@
                 </div>
             </main>
 
-            <!-- Footer Konten -->
             <footer class="mt-8 flex justify-between items-end">
                 <div>
                     <p class="font-semibold text-sm">Hormat Kami,</p>
@@ -339,29 +312,23 @@
 </div> </div>
    <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Simpan konfigurasi dan instance Flatpickr di variabel
             const flatpickrConfig = {
                 dateFormat: "d/m/Y",
                 defaultDate: "today"
             };
             let flatpickrInstance = flatpickr("#invoice-date", flatpickrConfig);
-            // --- LOGIKA BARU UNTUK MENGUBAH JUDUL SECARA REAL-TIME ---
             const clientNameInput = document.getElementById('client-name');
             const originalTitle = document.title;
 
             clientNameInput.addEventListener('input', function() {
-                // Ambil nama pelanggan dan bersihkan karakter ilegal untuk nama file
                 let clientName = this.value.trim().replace(/[\/\\?%*:|"<>]/g, '');
 
                 if (clientName) {
-                    // Jika ada nama, update judul dokumen
                     document.title = `Faktur_Roviana Printing_${clientName}`;
                 } else {
-                    // Jika kolom nama kosong, kembalikan ke judul asli
                     document.title = originalTitle;
                 }
             });
-            // --- AKHIR LOGIKA BARU ---
 
             function formatRupiah(angka) {
                 if(isNaN(angka) || angka === 0) return '';
@@ -450,14 +417,11 @@
             
             calculateTotal();
             
-            // === LOGIKA BARU UNTUK PRINT ===
             window.addEventListener('beforeprint', () => {
-                // Hancurkan (disable) Flatpickr
                 if (flatpickrInstance) {
                     flatpickrInstance.destroy();
                 }
 
-                // Sembunyikan baris DP jika kosong
                 const uangMukaValue = parseRupiah(document.getElementById('uang-muka').value) || 0;
                 if (uangMukaValue === 0) {
                     document.getElementById('dp-row').classList.add('sembunyikan-saat-cetak');
@@ -466,10 +430,8 @@
             });
 
             window.addEventListener('afterprint', () => {
-                // Buat kembali Flatpickr setelah selesai cetak
                 flatpickrInstance = flatpickr("#invoice-date", flatpickrConfig);
 
-                // Tampilkan kembali baris DP
                 document.getElementById('dp-row').classList.remove('sembunyikan-saat-cetak');
                 document.getElementById('sisa-row').classList.remove('sembunyikan-saat-cetak');
             });
