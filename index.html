@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faktur Pesanan - Roviana Printing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e5e7eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .invoice-container {
+            width: 1123px; /* Perkiraan lebar A4 landscape (297mm) */
+            background: #fff;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .invoice-body {
+            padding: 1cm;
+            flex-grow: 1;
+        }
+        .dotted-input-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .dotted-input-container label {
+            width: 100px;
+            flex-shrink: 0;
+        }
+        .dotted-input-container input {
+            border: none;
+            border-bottom: 1px dotted #374151;
+            width: 100%;
+            padding: 2px 0;
+            font-size: 1rem;
+        }
+        .dotted-input-container input:focus {
+            outline: none;
+            border-bottom: 1px solid #3b82f6;
+        }
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .main-table th, .main-table td {
+            border: 1px solid #d1d5db;
+            padding: 8px;
+            height: 23px; /* Tinggi baris sesuai permintaan */
+            box-sizing: content-box;
+        }
+        .main-table th {
+            background-color: #f9fafb;
+            text-align: center;
+            font-weight: 600;
+        }
+        .main-table input {
+            width: 100%;
+            border: none;
+            padding: 0 4px;
+        }
+        .main-table input:focus {
+            outline: none;
+            background-color: #eff6ff;
+        }
+        .summary-table {
+            width: 100%;
+        }
+        .summary-table td {
+            padding: 4px 0;
+            font-weight: bold;
+        }
+        .bottom-footer {
+            background-color: #4f46e5;
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+        .footer-item {
+            display: flex;
+            align-items: center;
+        }
+        .footer-item svg {
+            margin-right: 8px;
+        }
+
+        /* === CSS KHUSUS UNTUK MENCETAK === */
+        @page {
+            size: A4 landscape; /* Ukuran standar agar tidak terpotong, skala diatur oleh browser */
+            margin: 1cm;
+        }
+
+        @media print {
+            body {
+                background-color: #fff;
+                padding: 0;
+                display: block; /* Menghapus centering flexbox */
+                min-height: initial;
+            }
+            .invoice-container {
+                width: 100%;
+                height: auto;
+                box-shadow: none;
+            }
+            .invoice-body {
+                padding: 30px;
+            }
+            .dotted-input-container input {
+                border-bottom: 1px dotted #000;
+            }
+            input {
+                color: #000 !important;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .table-controls, #add-row, #remove-row, #print-button {
+                display: none;
+            }
+        .bottom-footer {        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+    .sembunyikan-saat-cetak {
+        display: none !important;
+    }
+ }
+ /* === CSS KHUSUS UNTUK TAMPILAN MOBILE === */
+@media (max-width: 480px) {
+
+    /* 1. Atur Ulang Layout Dasar */
+    body {
+        padding: 0;
+        align-items: flex-start; /* Hentikan centering vertikal */
+    }
+    .invoice-container {
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+        box-shadow: none; /* Hilangkan bayangan di mobile */
+    }
+    .invoice-body {
+        padding: 15px; /* Perkecil padding di mobile */
+    }
+
+    /* 2. Susun Ulang Header */
+    header.flex {
+        flex-direction: column; /* Tumpuk logo dan info pelanggan */
+        align-items: flex-start;
+        gap: 20px; /* Beri jarak antara logo dan info */
+    }
+    header img {
+        width: 60%; /* Buat logo lebih kecil */
+        max-width: 250px;
+    }
+    header > div:last-child {
+        width: 100%; /* Pastikan info pelanggan mengambil lebar penuh */
+    }
+    .dotted-input-container label {
+        width: 80px; /* Perkecil lebar label */
+    }
+
+    /* 3. Judul Faktur */
+    h1.text-xl {
+        text-align: center; /* Pindahkan judul ke tengah */
+        width: 100%;
+    }
+
+    /* 4. Ubah Tabel Menjadi Kartu */
+    .main-table thead {
+        display: none; /* Sembunyikan header tabel asli */
+    }
+    .main-table tr {
+        display: block; /* Setiap baris menjadi blok terpisah */
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        padding: 10px;
+    }
+    .main-table td {
+        display: flex; /* Gunakan flex untuk mensejajarkan label dan input */
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        border: none;
+        border-bottom: 1px solid #eee; /* Beri garis pemisah antar properti */
+        padding: 10px 5px;
+        text-align: right; /* Pindahkan isi ke kanan */
+    }
+    .main-table td:last-child {
+        border-bottom: none; /* Hapus garis di item terakhir */
+    }
+    .main-table td::before {
+        content: attr(data-label); /* Ambil teks dari data-label */
+        font-weight: bold;
+        text-align: left;
+        padding-right: 10px;
+    }
+    .main-table td input {
+        width: 50%; /* Batasi lebar input di mobile */
+    }
+    .main-table td.total {
+         font-weight: bold;
+    }
+
+
+    /* 5. Susun Ulang Footer Konten */
+    footer.flex {
+        flex-direction: column-reverse; /* Balik urutan, summary di atas */
+        align-items: flex-start;
+        gap: 30px;
+    }
+    footer > div {
+        width: 100% !important; /* Gunakan lebar penuh */
+    }
+    .mt-16 {
+        margin-top: 1rem; /* Kurangi jarak pada 'Hormat Kami' */
+    }
+
+    /* 6. Susun Ulang Footer Bawah */
+    .bottom-footer {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 20px 15px;
+        text-align: center;
+    }
+
+}
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="invoice-body">
+            <!-- Header -->
+            <header class="flex justify-between items-start mb-8">
+                <div class="flex items-center space-x-4">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJtvQ7-lv2tCMzssXdxkMKgfdnV6PuaHaNaLkVlwQ3TNPiuGO9Eodge5C86CUe5DGzDLtSFMbahwI47ypZVAiGM0hKFjIC_K2kDtMBSnekuRuTBTdsvRqwvYEio8LCD4h7AtK5TK40_qUCndUMvYn_M1WlQwgrniXJtDKRNPFdfl7XiFuIiGTJKxTEjmUT/s1600/Logo_Nama.png" alt="Logo Roviana Printing" width='304'>
+                </div>
+                <div>
+                    <div class="dotted-input-container">
+                        <label for="client-name">Kepada Yth,</label>
+                        <input type="text" id="client-name">
+                    </div>
+                    <div class="dotted-input-container">
+                        <label for="invoice-date">Tgl.</label>
+                        <input type="text" id="invoice-date">
+                    </div>
+                    <div class="dotted-input-container">
+                        <label for="client-phone">Tlp.</label>
+                        <input type="text" id="client-phone">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Judul Faktur -->
+            <h1 class="text-xl font-semibold text-gray-700 mb-4">Faktur Pesanan</h1>
+
+            <!-- Tabel Utama -->
+            <main>
+                <table class="main-table">
+                    <thead>
+                        <tr>
+                            <th class="w-1/12">No</th>
+                            <th class="w-5/12">Nama Pesanan</th>
+                            <th class="w-2/12">Banyak</th>
+                            <th class="w-2/12">Harga Satuan</th>
+                            <th class="w-2/12">Jumlah</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoice-items">
+                        <!-- Baris ditambahkan oleh JS -->
+                    </tbody>
+                </table>
+                <div class="table-controls mt-4 flex space-x-2">
+                    <button id="add-row" class="text-sm bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1 px-3 rounded">
+                        + Tambah Baris
+                    </button>
+                    <button id="remove-row" class="text-sm bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded">
+                        - Kurangi Baris
+                    </button>
+                </div>
+            </main>
+
+            <!-- Footer Konten -->
+            <footer class="mt-8 flex justify-between items-end">
+                <div>
+                    <p class="font-semibold">Hormat Kami</p>
+                    <div class="mt-16 flex items-center space-x-2">
+                         <img src="https://placehold.co/40x40/4f46e5/ffffff?text=RP" alt="Logo Kecil" class="h-8 w-8">
+                         <div>
+                            <p class="font-bold">Roviana</p>
+                            <p class="text-xs text-gray-500">PRINTING & PERCETAKAN</p>
+                         </div>
+                    </div>
+                </div>
+                <div class="w-4/12">
+                    <table class="summary-table">
+                        <!-- PERUBAHAN DI SINI -->
+                        <tr id="subtotal-row">
+                            <td class="w-1/2 text-right pr-4">Jumlah</td>
+                            <td class="w-1/2 text-right font-semibold" id="subtotal"></td>
+                        </tr>
+                        <tr id="dp-row">
+                            <td class="w-1/2 text-right pr-4">Uang Muka</td>
+                            <td class="w-1/2 text-right"><input type="text" id="uang-muka" class="text-right w-full" oninput="formatInputField(event)" ></td>
+                        </tr>
+                        <tr id="sisa-row">
+                            <td class="w-1/2 text-right pr-4 font-bold">Sisa</td>
+                            <td class="w-1/2 text-right font-bold" id="sisa"></td>
+                        </tr>
+                    </table>
+                </div>
+            </footer>
+             <button id="print-button" onclick="window.print()" class="w-full mt-8 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded">
+                Cetak Faktur
+            </button>
+        </div>
+
+        <!-- Footer Biru Bawah -->
+        <div class="bottom-footer">
+            <div class="footer-item">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.002 6.002 0 0111.336 0l-5.668.002-5.668-.002zM10 12a4 4 0 100-8 4 4 0 000 8z" clip-rule="evenodd" /></svg>
+                <span>www.rovianaprinting.com</span>
+            </div>
+            <div class="footer-item">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" /></svg>
+                <span>0853 2230 7373</span>
+            </div>
+            <div class="footer-item">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" /></svg>
+                <span>Jl. Waru No. 14 Rawamangun</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function formatRupiah(angka) {
+                if(isNaN(angka) || angka === 0) return '';
+                return 'Rp. ' + new Intl.NumberFormat('id-ID').format(angka);
+            }
+
+            function parseRupiah(rupiahString) {
+                if (typeof rupiahString !== 'string') return 0;
+                return Number(rupiahString.replace(/[^0-9]/g, ''));
+            }
+
+            window.calculateTotal = function () {
+                let subtotal = 0;
+                document.querySelectorAll('#invoice-items tr').forEach(row => {
+                    const qty = parseFloat(row.querySelector('.qty').value) || 0;
+                    const price = parseRupiah(row.querySelector('.price').value) || 0;
+                    const totalCell = row.querySelector('.total');
+                    const lineTotal = qty * price;
+                    totalCell.textContent = formatRupiah(lineTotal);
+                    subtotal += lineTotal;
+                });
+
+                const uangMuka = parseRupiah(document.getElementById('uang-muka').value) || 0;
+                const sisa = subtotal - uangMuka;
+
+                const subtotalRow = document.getElementById('subtotal-row');
+                const dpRow = document.getElementById('dp-row');
+                const sisaRow = document.getElementById('sisa-row');
+                
+                if (subtotal > 0) {
+                    subtotalRow.style.display = 'table-row';
+                    dpRow.style.display = 'table-row';
+                    sisaRow.style.display = 'table-row';
+                    document.getElementById('subtotal').textContent = formatRupiah(subtotal);
+                    document.getElementById('sisa').textContent = formatRupiah(sisa);
+                } else {
+                    subtotalRow.style.display = 'table-row';
+                    dpRow.style.display = 'table-row';
+                    sisaRow.style.display = 'table-row';
+                    document.getElementById('subtotal').textContent = formatRupiah(subtotal);
+                    document.getElementById('sisa').textContent = formatRupiah(sisa);
+                }
+            };
+            
+            window.formatInputField = function(e) {
+                const value = parseRupiah(e.target.value);
+                e.target.value = 'Rp. ' + new Intl.NumberFormat('id-ID').format(value);
+                calculateTotal();
+            }
+
+            function renumberRows() {
+                const rows = document.querySelectorAll('#invoice-items tr');
+                rows.forEach((row, index) => {
+                    row.cells[0].textContent = index + 1;
+                });
+            }
+
+            function addRow() {
+                const tbody = document.getElementById('invoice-items');
+                const newRow = tbody.insertRow();
+                
+                newRow.innerHTML = `
+                    <td data-label="No" class="text-center"></td>
+                    <td data-label="Nama Pesanan"><input type="text" class="nama" placeholder="..."></td>
+                    <td data-label="Banyak"><input type="text" class="qty text-right" oninput="calculateTotal()"></td>
+                    <td data-label="Harga Satuan"><input type="text" class="price text-right" oninput="formatInputField(event)"></td>
+                    <td data-label="Jumlah" class="total text-right"></td>
+                `;
+                renumberRows();
+            }
+
+            function removeRow() {
+                const tbody = document.getElementById('invoice-items');
+                if (tbody.rows.length > 1) { 
+                    tbody.deleteRow(-1); 
+                    calculateTotal(); 
+                }
+            }
+
+            document.getElementById('add-row').addEventListener('click', addRow);
+            document.getElementById('remove-row').addEventListener('click', removeRow);
+
+            for(let i=0; i<3; i++) {
+                addRow();
+            }
+            
+            flatpickr("#invoice-date", {
+                dateFormat: "d/m/Y",
+                defaultDate: "today"
+            });
+            
+            calculateTotal();
+            
+            window.addEventListener('beforeprint', () => {
+                const uangMukaValue = parseRupiah(document.getElementById('uang-muka').value) || 0;
+                
+                if (uangMukaValue === 0) {
+                    document.getElementById('dp-row').classList.add('sembunyikan-saat-cetak');
+                    document.getElementById('sisa-row').classList.add('sembunyikan-saat-cetak');
+                }
+            });
+
+            window.addEventListener('afterprint', () => {
+                document.getElementById('dp-row').classList.remove('sembunyikan-saat-cetak');
+                document.getElementById('sisa-row').classList.remove('sembunyikan-saat-cetak');
+            });
+        });
+    </script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('Service Worker berhasil didaftarkan.');
+        })
+        .catch(error => {
+          console.log('Pendaftaran Service Worker gagal: ', error);
+        });
+    });
+  }
+</script>
+
+</body>
+</html>
