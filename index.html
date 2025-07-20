@@ -34,18 +34,20 @@
         .dotted-input-container {
             display: flex;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 0px;
         }
         .dotted-input-container label {
             width: 100px;
             flex-shrink: 0;
+            font-size: 0.875rem;
+            
         }
         .dotted-input-container input {
             border: none;
             border-bottom: 1px dotted #374151;
             width: 100%;
             padding: 2px 0;
-            font-size: 1rem;
+            font-size: 0.875rem;
         }
         .dotted-input-container input:focus {
             outline: none;
@@ -54,7 +56,7 @@
         .main-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 50px;
         }
         .main-table th, .main-table td {
             border: 1px solid #d1d5db;
@@ -66,6 +68,7 @@
             background-color: #f9fafb;
             text-align: center;
             font-weight: 600;
+            font-size:0.875rem;
         }
         .main-table input {
             width: 100%;
@@ -79,25 +82,22 @@
         .summary-table {
             width: 100%;
         }
-        .summary-table td {
-            padding: 4px 0;
-            font-weight: bold;
-        }
-        .bottom-footer {
-            background-color: #4f46e5;
-            color: white;
-            padding: 15px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.875rem;
-        }
-        .footer-item {
-            display: flex;
-            align-items: center;
-        }
-        .footer-item svg {
-            margin-right: 8px;
+        /* Kode CSS Baru untuk Summary Table */
+.summary-table td {
+    padding: 6px;
+    font-size: 0.875rem;
+    
+}
+
+/* Menyesuaikan tampilan input agar seperti teks biasa */
+#uang-muka {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+}
+#uang-muka:focus {
+    outline: none;
+}
         }
 
         /* === CSS KHUSUS UNTUK MENCETAK === */
@@ -122,7 +122,7 @@
                 padding: 30px;
             }
             .dotted-input-container input {
-                border-bottom: 1px dotted #000;
+                border-bottom:none;
             }
             input {
                 color: #000 !important;
@@ -137,6 +137,17 @@
     }
     .sembunyikan-saat-cetak {
         display: none !important;
+    }
+    .main-table th {
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+
+    /* BARIS BARU UNTUK CONTAINER SUMMARY TABLE */
+    /* Menargetkan div dengan kelas bg-gray-50 di dalam footer */
+    footer .bg-gray-50 {
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
     }
  }
  /* === CSS KHUSUS UNTUK TAMPILAN MOBILE === */
@@ -230,30 +241,30 @@
     .mt-16 {
         margin-top: 1rem; /* Kurangi jarak pada 'Hormat Kami' */
     }
-
-    /* 6. Susun Ulang Footer Bawah */
-    .bottom-footer {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        padding: 20px 15px;
-        text-align: center;
-    }
-
 }
     </style>
 </head>
 <body>
     <div class="invoice-container">
         <div class="invoice-body">
+             
             <!-- Header -->
             <header class="flex justify-between items-start mb-8">
-                <div class="flex items-center space-x-4">
-                    <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/logo_nama_rp.png" alt="Logo Roviana Printing" width='304'>
-                </div>
+                <div class="flex flex-col items-start"> <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/logo_nama_rp.png" alt="Logo Roviana Printing" width="304">
+    
+    <div class="mt-6 text-xs text-gray-600">
+        <p>www.rovianaprinting.com</p>
+        <p>Jl. Waru No. 14 Rawamangun, Jakarta Timur</p>
+        <p>0853 2230 7373</p>
+    </div>
+
+</div>
                 <div>
+                    <!-- Judul Faktur -->
+            <h1 class="text-3xl font-semibold text-gray-700 mb-2">FAKTUR PESANAN</h1>
                     <div class="dotted-input-container">
                         <label for="client-name">Kepada Yth,</label>
+                        
                         <input type="text" id="client-name">
                     </div>
                     <div class="dotted-input-container">
@@ -267,19 +278,16 @@
                 </div>
             </header>
 
-            <!-- Judul Faktur -->
-            <h1 class="text-xl font-semibold text-gray-700 mb-4">Faktur Pesanan</h1>
-
             <!-- Tabel Utama -->
             <main>
                 <table class="main-table">
                     <thead>
                         <tr>
                             <th class="w-1/12">No</th>
-                            <th class="w-5/12">Nama Pesanan</th>
-                            <th class="w-2/12">Banyak</th>
-                            <th class="w-2/12">Harga Satuan</th>
-                            <th class="w-2/12">Jumlah</th>
+                            <th class="w-5/12">NAMA PESANAN</th>
+                            <th class="w-2/12">BANYAK</th>
+                            <th class="w-2/12">HARGA SATUAN</th>
+                            <th class="w-2/12">JUMLAH</th>
                         </tr>
                     </thead>
                     <tbody id="invoice-items">
@@ -299,28 +307,31 @@
             <!-- Footer Konten -->
             <footer class="mt-8 flex justify-between items-end">
                 <div>
-                    <p class="font-semibold">Hormat Kami</p>
-                    <div class="mt-2 ml-2.5 flex items-center space-x-2">
+                    <p class="font-semibold text-sm">Hormat Kami,</p>
+                    <div class="mt-2 ml-1 flex items-center space-x-2">
                          <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/logo_stamp.png" alt="Logo Kecil" class="h-20 w-20" style="transform: rotate(-10deg);"> 
                     </div>
                 </div>
-                <div class="w-4/12">
-                    <table class="summary-table">
-                        <!-- PERUBAHAN DI SINI -->
-                        <tr id="subtotal-row">
-                            <td class="w-1/2 text-right pr-4">Jumlah</td>
-                            <td class="w-1/2 text-right font-semibold" id="subtotal"></td>
-                        </tr>
-                        <tr id="dp-row">
-                            <td class="w-1/2 text-right pr-4">Uang Muka</td>
-                            <td class="w-1/2 text-right"><input type="text" id="uang-muka" class="text-right w-full" oninput="formatInputField(event)" ></td>
-                        </tr>
-                        <tr id="sisa-row">
-                            <td class="w-1/2 text-right pr-4 font-bold">Sisa</td>
-                            <td class="w-1/2 text-right font-bold" id="sisa"></td>
-                        </tr>
-                    </table>
-                </div>
+              <div class="w-4/12">
+    <div class="bg-gray-50 p-2 rounded-lg">
+        <table class="summary-table">
+    <tr id="subtotal-row">
+        <td class="text-left text-gray-800 font-bold">Jumlah</td>
+        <td class="text-right font-medium" id="subtotal"></td>
+    </tr>
+    <tr id="dp-row">
+        <td class="text-left text-gray-800 font-bold whitespace-nowrap">Uang Muka</td>
+        <td class="text-right">
+            <input type="text" id="uang-muka" class="text-right w-full font-medium" oninput="formatInputField(event)">
+        </td>
+    </tr>
+    <tr id="sisa-row">
+        <td class="text-left text-gray-800 font-bold">Sisa</td>
+        <td class="text-right font-bold" id="sisa"></td>
+    </tr>
+</table>
+    </div>
+</div>
             </footer>
              <button id="print-button" onclick="window.print()" class="w-full mt-8 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded">
                 Cetak Faktur
@@ -328,21 +339,7 @@
         </div>
 
         <!-- Footer Biru Bawah -->
-        <div class="bottom-footer">
-            <div class="footer-item">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.002 6.002 0 0111.336 0l-5.668.002-5.668-.002zM10 12a4 4 0 100-8 4 4 0 000 8z" clip-rule="evenodd" /></svg>
-                <span>www.rovianaprinting.com</span>
-            </div>
-            <div class="footer-item">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" /></svg>
-                <span>0853 2230 7373</span>
-            </div>
-            <div class="footer-item">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" /></svg>
-                <span>Jl. Waru No. 14 Rawamangun</span>
-            </div>
-        </div>
-    </div>
+       
 
    <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -433,7 +430,7 @@
                 newRow.innerHTML = `
                     <td data-label="No" class="text-center"></td>
                     <td data-label="Nama Pesanan"><input type="text" class="nama" placeholder="..."></td>
-                    <td data-label="Banyak"><input type="text" class="qty text-right" oninput="calculateTotal()"></td>
+                    <td data-label="Banyak"><input type="text" class="qty text-center" oninput="calculateTotal()"></td>
                     <td data-label="Harga Satuan"><input type="text" class="price text-right" oninput="formatInputField(event)"></td>
                     <td data-label="Jumlah" class="total text-right"></td>
                 `;
