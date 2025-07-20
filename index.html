@@ -344,8 +344,15 @@
         </div>
     </div>
 
-    <script>
+   <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Simpan konfigurasi dan instance Flatpickr di variabel
+            const flatpickrConfig = {
+                dateFormat: "d/m/Y",
+                defaultDate: "today"
+            };
+            let flatpickrInstance = flatpickr("#invoice-date", flatpickrConfig);
+
             function formatRupiah(angka) {
                 if(isNaN(angka) || angka === 0) return '';
                 return 'Rp. ' + new Intl.NumberFormat('id-ID').format(angka);
@@ -431,16 +438,17 @@
                 addRow();
             }
             
-            flatpickr("#invoice-date", {
-                dateFormat: "d/m/Y",
-                defaultDate: "today"
-            });
-            
             calculateTotal();
             
+            // === LOGIKA BARU UNTUK PRINT ===
             window.addEventListener('beforeprint', () => {
+                // Hancurkan (disable) Flatpickr
+                if (flatpickrInstance) {
+                    flatpickrInstance.destroy();
+                }
+
+                // Sembunyikan baris DP jika kosong
                 const uangMukaValue = parseRupiah(document.getElementById('uang-muka').value) || 0;
-                
                 if (uangMukaValue === 0) {
                     document.getElementById('dp-row').classList.add('sembunyikan-saat-cetak');
                     document.getElementById('sisa-row').classList.add('sembunyikan-saat-cetak');
@@ -448,6 +456,10 @@
             });
 
             window.addEventListener('afterprint', () => {
+                // Buat kembali Flatpickr setelah selesai cetak
+                flatpickrInstance = flatpickr("#invoice-date", flatpickrConfig);
+
+                // Tampilkan kembali baris DP
                 document.getElementById('dp-row').classList.remove('sembunyikan-saat-cetak');
                 document.getElementById('sisa-row').classList.remove('sembunyikan-saat-cetak');
             });
