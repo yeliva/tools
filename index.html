@@ -419,7 +419,7 @@
             
             window.addEventListener('beforeprint', () => {
                 
-                const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyrTMcC-zsMHkzOdZeOY4AwgLLht-WRvuWfNkHWFEJvSmEDBA3VdDUYlVc2Aa6ybEPS/exec';
+                const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzMyyCtiSAx2z7NFLi9JkIvyy1J-tp3hfsXXoecAKz_NuBJ03rqJYqUOCxcWeZeAlHn/exec';
 
     try {
         const invoiceData = {
@@ -432,38 +432,35 @@
         const rows = document.querySelectorAll('#invoice-items tr');
         rows.forEach(row => {
             const namaInput = row.querySelector('.nama');
-            const qtyInput = row.querySelector('.qty');
-            const priceInput = row.querySelector('.price');
-            const totalCell = row.cells[4];
-
-            // Hanya proses dan kirim baris jika semua elemen input ada dan nama pesanan diisi
-            if (namaInput && namaInput.value && qtyInput && priceInput && totalCell) {
+            if (namaInput && namaInput.value) {
                 invoiceData.items.push({
                     namaPesanan: namaInput.value,
-                    banyak: qtyInput.value,
-                    hargaSatuan: priceInput.value,
-                    jumlah: totalCell.textContent
+                    banyak: row.querySelector('.qty')?.value || '0',
+                    hargaSatuan: row.querySelector('.price')?.value || 'Rp. 0',
+                    jumlah: row.cells[4]?.textContent || 'Rp. 0'
                 });
             }
         });
 
-        // Hanya kirim data jika ada minimal satu item pesanan
         if (invoiceData.items.length > 0) {
-            if (navigator.sendBeacon) {
-                navigator.sendBeacon(WEB_APP_URL, JSON.stringify(invoiceData));
-                console.log('Data dikirim ke Spreadsheet via sendBeacon.');
-            } else {
-                fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(invoiceData),
-                    mode: 'no-cors'
-                });
-                console.log('Data dikirim ke Spreadsheet via fetch.');
-            }
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(invoiceData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Respons dari Google Script:', data);
+            })
+            .catch(err => {
+                console.error('Gagal mengirim data:', err);
+            });
         }
 
     } catch (error) {
-        console.error("Terjadi error saat mengumpulkan data untuk dikirim:", error);
+        console.error("Terjadi error saat mengumpulkan data:", error);
     }
                 if (flatpickrInstance) {
                     flatpickrInstance.destroy();
