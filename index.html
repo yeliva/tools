@@ -421,41 +421,49 @@
                 
                 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyrTMcC-zsMHkzOdZeOY4AwgLLht-WRvuWfNkHWFEJvSmEDBA3VdDUYlVc2Aa6ybEPS/exec';
 
-    // 1. Kumpulkan semua data dari form
-    const invoiceData = {
-        tanggal: document.getElementById('invoice-date').value,
-        namaPelanggan: document.getElementById('client-name').value,
-        telepon: document.getElementById('client-phone').value,
-        items: []
-    };
+    try {
+        const invoiceData = {
+            tanggal: document.getElementById('invoice-date')?.value || '',
+            namaPelanggan: document.getElementById('client-name')?.value || '',
+            telepon: document.getElementById('client-phone')?.value || '',
+            items: []
+        };
 
-    const rows = document.querySelectorAll('#invoice-items tr');
-    rows.forEach(row => {
-        const namaPesanan = row.querySelector('.nama').value;
-        // Hanya kirim baris yang ada isinya
-        if (namaPesanan) {
-            invoiceData.items.push({
-                namaPesanan: namaPesanan,
-                banyak: row.querySelector('.qty').value,
-                hargaSatuan: row.querySelector('.price').value,
-                jumlah: row.cells[4].textContent
-            });
+        const rows = document.querySelectorAll('#invoice-items tr');
+        rows.forEach(row => {
+            const namaInput = row.querySelector('.nama');
+            const qtyInput = row.querySelector('.qty');
+            const priceInput = row.querySelector('.price');
+            const totalCell = row.cells[4];
+
+            // Hanya proses dan kirim baris jika semua elemen input ada dan nama pesanan diisi
+            if (namaInput && namaInput.value && qtyInput && priceInput && totalCell) {
+                invoiceData.items.push({
+                    namaPesanan: namaInput.value,
+                    banyak: qtyInput.value,
+                    hargaSatuan: priceInput.value,
+                    jumlah: totalCell.textContent
+                });
+            }
+        });
+
+        // Hanya kirim data jika ada minimal satu item pesanan
+        if (invoiceData.items.length > 0) {
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(WEB_APP_URL, JSON.stringify(invoiceData));
+                console.log('Data dikirim ke Spreadsheet via sendBeacon.');
+            } else {
+                fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(invoiceData),
+                    mode: 'no-cors'
+                });
+                console.log('Data dikirim ke Spreadsheet via fetch.');
+            }
         }
-    });
 
-    // 2. Kirim data ke Google Apps Script
-    // 'navigator.sendBeacon' adalah cara modern untuk mengirim data saat halaman akan ditutup/dicetak
-    // Jika tidak didukung, ia akan menggunakan 'fetch' sebagai cadangan
-    if (navigator.sendBeacon) {
-        navigator.sendBeacon(WEB_APP_URL, JSON.stringify(invoiceData));
-        console.log('Data dikirim ke Spreadsheet via sendBeacon.');
-    } else {
-        fetch(WEB_APP_URL, {
-            method: 'POST',
-            body: JSON.stringify(invoiceData),
-            mode: 'no-cors' // Penting untuk beberapa kasus
-        }).then(res => console.log('Data dikirim ke Spreadsheet via fetch.'))
-          .catch(err => console.error('Gagal mengirim data:', err));
+    } catch (error) {
+        console.error("Terjadi error saat mengumpulkan data untuk dikirim:", error);
     }
                 if (flatpickrInstance) {
                     flatpickrInstance.destroy();
