@@ -418,6 +418,50 @@
             calculateTotal();
             
             window.addEventListener('beforeprint', () => {
+                
+                const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyrTMcC-zsMHkzOdZeOY4AwgLLht-WRvuWfNkHWFEJvSmEDBA3VdDUYlVc2Aa6ybEPS/exec';
+
+    try {
+        const invoiceData = {
+            tanggal: document.getElementById('invoice-date')?.value || '',
+            namaPelanggan: document.getElementById('client-name')?.value || '',
+            telepon: document.getElementById('client-phone')?.value || '',
+            items: []
+        };
+
+        const rows = document.querySelectorAll('#invoice-items tr');
+        rows.forEach(row => {
+            const namaInput = row.querySelector('.nama');
+            if (namaInput && namaInput.value) {
+                invoiceData.items.push({
+                    namaPesanan: namaInput.value,
+                    banyak: row.querySelector('.qty')?.value || '0',
+                    hargaSatuan: row.querySelector('.price')?.value || 'Rp. 0',
+                    jumlah: row.cells[4]?.textContent || 'Rp. 0'
+                });
+            }
+        });
+
+        if (invoiceData.items.length > 0) {
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(invoiceData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Respons dari Google Script:', data);
+            })
+            .catch(err => {
+                console.error('Gagal mengirim data:', err);
+            });
+        }
+
+    } catch (error) {
+        console.error("Terjadi error saat mengumpulkan data:", error);
+    }
                 if (flatpickrInstance) {
                     flatpickrInstance.destroy();
                 }
