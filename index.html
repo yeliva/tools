@@ -418,16 +418,57 @@
             calculateTotal();
             
             window.addEventListener('beforeprint', () => {
-                if (flatpickrInstance) {
-                    flatpickrInstance.destroy();
-                }
+    // GANTI DENGAN URL WEB APP ANDA DARI LANGKAH 3
+    const WEB_APP_URL = 'https://script.google.com/macros/s/xxxxxxxxxxxxxxxxxxxxxxxxxxxx/exec';
 
-                const uangMukaValue = parseRupiah(document.getElementById('uang-muka').value) || 0;
-                if (uangMukaValue === 0) {
-                    document.getElementById('dp-row').classList.add('sembunyikan-saat-cetak');
-                    document.getElementById('sisa-row').classList.add('sembunyikan-saat-cetak');
-                }
+    // 1. Kumpulkan semua data dari form
+    const invoiceData = {
+        tanggal: document.getElementById('invoice-date').value,
+        namaPelanggan: document.getElementById('client-name').value,
+        telepon: document.getElementById('client-phone').value,
+        items: []
+    };
+
+    const rows = document.querySelectorAll('#invoice-items tr');
+    rows.forEach(row => {
+        const namaPesanan = row.querySelector('.nama').value;
+        // Hanya kirim baris yang ada isinya
+        if (namaPesanan) {
+            invoiceData.items.push({
+                namaPesanan: namaPesanan,
+                banyak: row.querySelector('.qty').value,
+                hargaSatuan: row.querySelector('.price').value,
+                jumlah: row.cells[4].textContent
             });
+        }
+    });
+
+    // 2. Kirim data ke Google Apps Script
+    // 'navigator.sendBeacon' adalah cara modern untuk mengirim data saat halaman akan ditutup/dicetak
+    // Jika tidak didukung, ia akan menggunakan 'fetch' sebagai cadangan
+    if (navigator.sendBeacon) {
+        navigator.sendBeacon(WEB_APP_URL, JSON.stringify(invoiceData));
+        console.log('Data dikirim ke Spreadsheet via sendBeacon.');
+    } else {
+        fetch(WEB_APP_URL, {
+            method: 'POST',
+            body: JSON.stringify(invoiceData),
+            mode: 'no-cors' // Penting untuk beberapa kasus
+        }).then(res => console.log('Data dikirim ke Spreadsheet via fetch.'))
+          .catch(err => console.error('Gagal mengirim data:', err));
+    }
+
+
+    // --- Kode lama Anda untuk Flatpickr dan menyembunyikan baris tetap di sini ---
+    if (window.flatpickrInstance) {
+        window.flatpickrInstance.destroy();
+    }
+    const uangMukaValue = parseRupiah(document.getElementById('uang-muka').value) || 0;
+    if (uangMukaValue === 0) {
+        document.getElementById('dp-row').classList.add('sembunyikan-saat-cetak');
+        document.getElementById('sisa-row').classList.add('sembunyikan-saat-cetak');
+    }
+});
 
             window.addEventListener('afterprint', () => {
                 flatpickrInstance = flatpickr("#invoice-date", flatpickrConfig);
