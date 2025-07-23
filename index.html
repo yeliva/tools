@@ -422,7 +422,7 @@
             items: items
         };
         
-        // **PASTIKAN URL INI ADALAH URL DEPLOYMENT TERBARU ANDA**
+        console.log("Data yang akan dikirim:", JSON.stringify(invoiceData, null, 2));
         const url = 'https://script.google.com/macros/s/AKfycbypHs3LU8iwJo9IPalIddYAG8gNDHebfiOa6bGp8IEeh9VQ2H2bD2y2uPWeBg4OuHBG/exec';
 
         try {
@@ -444,7 +444,7 @@
     console.log('Tombol ditekan, memulai proses simpan dan cetak...');
     
     // HAPUS "await" dari baris di bawah ini
-    simpanKeSheet(); 
+    await simpanKeSheet(); 
     
     console.log('Permintaan simpan dikirim, langsung membuka jendela cetak.');
     window.print();
