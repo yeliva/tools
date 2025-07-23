@@ -39,7 +39,7 @@
         .dotted-input-container label {
             width: 100px;
             flex-shrink: 0;
-            font-size: 0.875rem;
+            font-size: 12pt;
             
         }
         .dotted-input-container input {
@@ -47,7 +47,7 @@
             border-bottom: 1px dotted #374151;
             width: 100%;
             padding: 2px 0;
-            font-size: 0.875rem;
+            font-size: 12pt;
         }
         .dotted-input-container input:focus {
             outline: none;
@@ -68,7 +68,7 @@
             background-color: #f9fafb;
             text-align: center;
             font-weight: 600;
-            font-size:0.875rem;
+            font-size:12pt;
         }
         .main-table input {
             width: 100%;
@@ -84,7 +84,7 @@
         }
 .summary-table td {
     padding: 6px;
-    font-size: 0.875rem;
+    font-size: 12pt;
     
 }
 #uang-muka {
@@ -123,7 +123,8 @@
                 -webkit-print-color-adjust: exact;
                 color-adjust: exact;
             }
-            .table-controls, #add-row, #remove-row, #print-button {
+            .table-controls, #add-row, #remove-row, #save-button,
+      #print-only-button {
                 display: none;
             }
         .bottom-footer {        -webkit-print-color-adjust: exact;
@@ -306,9 +307,14 @@
     </div>
 </div>
             </footer>
-             <button id="print-button" class="w-full mt-8 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded">
-                Cetak Faktur
-            </button>
+             <div class="mt-8 flex space-x-4">
+    <button id="save-button" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded">
+        Simpan ke Sheet
+    </button>
+    <button id="print-only-button" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded">
+        Cetak Faktur
+    </button>
+</div>
 </div> </div>
    <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -413,11 +419,11 @@
         });
 
         const invoiceData = {
-        tanggal: document.getElementById('invoice-date').value,
-        kepada: document.getElementById('client-name').value,
-        telepon: document.getElementById('client-phone').value,
-        items: items
-    };
+            tanggal: document.getElementById('invoice-date').value,
+            kepada: document.getElementById('client-name').value,
+            telepon: document.getElementById('client-phone').value,
+            items: items
+        };
         
         console.log("Data yang akan dikirim:", JSON.stringify(invoiceData, null, 2));
         const url = 'https://script.google.com/macros/s/AKfycby67XUBRaaNmjoHVbbswc4JyXN5sm9wL01GPIVhewikrTHtkP1hLkJCW0Xn1NrafVeHyA/exec';
@@ -430,29 +436,30 @@
                 mode: 'no-cors'
             });
             console.log('Permintaan untuk menyimpan data telah dikirim.');
+            alert('Data berhasil disimpan ke Google Sheets!'); // Tambahkan notifikasi sukses
         } catch (error) {
             console.error('Terjadi kesalahan jaringan, data tidak dapat dikirim.', error);
+            alert('Gagal menyimpan data. Periksa koneksi internet Anda.'); // Tambahkan notifikasi gagal
         }
     }
     
-    // Fungsi ini menggabungkan simpan dan cetak
-    async function simpanDanCetak(event) {
-    event.preventDefault(); 
-    console.log('Tombol ditekan, memulai proses simpan dan cetak...');
-    
-    // HAPUS "await" dari baris di bawah ini
-    await simpanKeSheet(); 
-    
-    console.log('Permintaan simpan dikirim, langsung membuka jendela cetak.');
-    window.print();
-}
+    // HAPUS FUNGSI simpanDanCetak DARI KODE ANDA
 
-    // Menghubungkan fungsi ke tombol Cetak Faktur
-    const printButton = document.getElementById('print-button');
-    if (printButton) {
-        printButton.addEventListener('click', simpanDanCetak);
-        // Menghapus atribut onclick lama jika ada, untuk menghindari konflik
-        printButton.removeAttribute('onclick');
+    // --- PENGATURAN EVENT LISTENER BARU UNTUK DUA TOMBOL ---
+    const saveButton = document.getElementById('save-button');
+    if (saveButton) {
+        saveButton.addEventListener('click', function(event){
+            event.preventDefault();
+            simpanKeSheet();
+        });
+    }
+
+    const printOnlyButton = document.getElementById('print-only-button');
+    if (printOnlyButton) {
+        printOnlyButton.addEventListener('click', function(event){
+            event.preventDefault();
+            window.print();
+        });
     }
   window.addEventListener('beforeprint', () => {
         console.log('Before print: Menyiapkan halaman untuk dicetak.');
