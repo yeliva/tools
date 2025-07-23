@@ -440,12 +440,15 @@
     
     // Fungsi ini menggabungkan simpan dan cetak
     async function simpanDanCetak(event) {
-        event.preventDefault(); // Mencegah perilaku default tombol
-        console.log('Tombol ditekan, memulai proses simpan dan cetak...');
-        await simpanKeSheet();
-        console.log('Proses simpan selesai, membuka jendela cetak.');
-        window.print();
-    }
+    event.preventDefault(); 
+    console.log('Tombol ditekan, memulai proses simpan dan cetak...');
+    
+    // HAPUS "await" dari baris di bawah ini
+    simpanKeSheet(); 
+    
+    console.log('Permintaan simpan dikirim, langsung membuka jendela cetak.');
+    window.print();
+}
 
     // Menghubungkan fungsi ke tombol Cetak Faktur
     const printButton = document.getElementById('print-button');
