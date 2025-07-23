@@ -436,6 +436,66 @@
                 document.getElementById('sisa-row').classList.remove('sembunyikan-saat-cetak');
             });
         });
+        // Gantikan fungsi JavaScript sebelumnya dengan yang ini
+
+// Fungsi ini FOKUS hanya untuk mengumpulkan dan mengirim data
+// Dibuat lebih fleksibel agar bisa dipanggil oleh fungsi lain
+async function simpanFaktur() {
+    const items = [];
+    document.querySelectorAll('#invoice-items tr').forEach(row => {
+        const namaPesanan = row.querySelector('.nama').value;
+        if (namaPesanan) { // Hanya proses baris yang ada isinya
+            items.push({
+                nama: namaPesanan,
+                banyak: row.querySelector('.qty').value,
+                harga: row.querySelector('.price').value,
+                jumlah: row.querySelector('.total').textContent
+            });
+        }
+    });
+
+    const invoiceData = {
+        kepada: document.getElementById('client-name').value,
+        tanggal: document.getElementById('invoice-date').value,
+        telepon: document.getElementById('client-phone').value,
+        subtotal: document.getElementById('subtotal').textContent,
+        uangMuka: document.getElementById('uang-muka').value,
+        sisa: document.getElementById('sisa').textContent,
+        items: items
+    };
+
+    try {
+        // Kirim data ke backend Google Apps Script Anda
+        await fetch('https://script.google.com/macros/s/AKfycbzJ99aaiXDPg5l5w7ZpgvDuBcD-kHeZpl-BCX8ZVYjztaE-ycMT-S01dH7nZ9mWIAZ_/exec', {
+            method: 'POST',
+            // PERBAIKAN 1: Mengubah 'utf-g' menjadi 'utf-8'
+            headers: {
+              'Content-Type': 'text/plain;charset=utf-8', 
+            },
+            body: JSON.stringify(invoiceData),
+            mode: 'no-cors' 
+        });
+
+        // PERBAIKAN 2: Hapus blok if/else dan langsung berikan feedback
+        // karena kita tidak bisa memeriksa 'response.ok' dalam mode 'no-cors'
+        console.log('Permintaan untuk menyimpan data telah dikirim ke Google Sheets.');
+
+    } catch (error) {
+        // Blok ini akan menangani kesalahan jaringan, misalnya jika tidak ada koneksi internet.
+        console.error('Terjadi kesalahan jaringan, data tidak dapat dikirim.', error);
+    }
+}
+
+// Fungsi ini sudah benar dan tidak perlu diubah
+async function simpanDanCetak() {
+    console.log('Memulai proses simpan dan cetak...');
+    // Langkah 1: Panggil fungsi simpan
+    await simpanFaktur();
+
+    // Langkah 2: Setelah proses simpan selesai, buka jendela cetak
+    console.log('Proses simpan selesai, membuka jendela cetak.');
+    window.print();
+}
     </script>
 <script>
   if ('serviceWorker' in navigator) {
