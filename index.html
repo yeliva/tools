@@ -454,7 +454,27 @@
         // Menghapus atribut onclick lama jika ada, untuk menghindari konflik
         printButton.removeAttribute('onclick');
     }
-});
+  window.addEventListener('beforeprint', () => {
+        console.log('Before print: Menyiapkan halaman untuk dicetak.');
+        if (flatpickrInstance) {
+            flatpickrInstance.destroy();
+        }
+
+        const uangMukaValue = parseRupiah(document.getElementById('uang-muka').value) || 0;
+        if (uangMukaValue === 0) {
+            document.getElementById('dp-row').classList.add('sembunyikan-saat-cetak');
+            document.getElementById('sisa-row').classList.add('sembunyikan-saat-cetak');
+        }
+    });
+
+    window.addEventListener('afterprint', () => {
+        console.log('After print: Mengembalikan halaman ke kondisi semula.');
+        flatpickrInstance = flatpickr("#invoice-date", flatpickrConfig);
+
+        document.getElementById('dp-row').classList.remove('sembunyikan-saat-cetak');
+        document.getElementById('sisa-row').classList.remove('sembunyikan-saat-cetak');
+    });
+});         
     </script>
 <script>
   if ('serviceWorker' in navigator) {
