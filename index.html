@@ -413,14 +413,11 @@
         });
 
         const invoiceData = {
-            tanggal: document.getElementById('invoice-date').value,
-            kepada: document.getElementById('client-name').value,
-            telepon: document.getElementById('client-phone').value,
-            subtotal: document.getElementById('subtotal').textContent,
-            uangMuka: document.getElementById('uang-muka').value,
-            sisa: document.getElementById('sisa').textContent,
-            items: items
-        };
+        tanggal: document.getElementById('invoice-date').value,
+        kepada: document.getElementById('client-name').value,
+        telepon: document.getElementById('client-phone').value,
+        items: items
+    };
         
         console.log("Data yang akan dikirim:", JSON.stringify(invoiceData, null, 2));
         const url = 'https://script.google.com/macros/s/AKfycby67XUBRaaNmjoHVbbswc4JyXN5sm9wL01GPIVhewikrTHtkP1hLkJCW0Xn1NrafVeHyA/exec';
