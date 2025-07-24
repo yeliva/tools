@@ -330,7 +330,8 @@ footer p.font-semibold {
 </div>
 </div> </div>
    <script>
-        document.addEventListener('DOMContentLoaded', function () 
+        document.addEventListener('DOMContentLoaded', function () {
+
     const flatpickrConfig = {
         dateFormat: "d/m/Y",
         defaultDate: "today",
@@ -413,6 +414,8 @@ footer p.font-semibold {
     for(let i=0; i<1; i++) { addRow(); }
     calculateTotal();
 
+    
+
     async function simpanKeSheet() {
         const items = [];
         document.querySelectorAll('#invoice-items tr').forEach(row => {
@@ -451,6 +454,7 @@ footer p.font-semibold {
             alert('Gagal menyimpan data. Periksa koneksi internet Anda.'); // Tambahkan notifikasi gagal
         }
     }
+    
     
     const saveButton = document.getElementById('save-button');
     if (saveButton) {
