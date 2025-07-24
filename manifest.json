@@ -1,6 +1,6 @@
 {
-  "name": "Faktur Pesanan Roviana",
-  "short_name": "Faktur Roviana",
+  "name": "Faktur Roviana Printing",
+  "short_name": "Faktur RP",
   "description": "Aplikasi untuk membuat faktur pesanan untuk Roviana Printing.",
   "start_url": ".",
   "display": "standalone",
