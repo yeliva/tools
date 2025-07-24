@@ -241,7 +241,7 @@ footer p.font-semibold {
     <div class="invoice-container">
         <div class="invoice-body">
             <header class="flex justify-between items-start mb-8">
-                <div class="flex flex-col items-start"> <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/logo_rp.png" alt="Logo Roviana Printing" width="304">
+                <div class="flex flex-col items-start"> <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/logo_rp.png" alt="Logo Roviana Printing" width="270">
     
     <div class="mt-6 text-gray-600">
         <p>www.rovianaprinting.com</p>
@@ -330,10 +330,7 @@ footer p.font-semibold {
 </div>
 </div> </div>
    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-    // --- SEMUA FUNGSI DARI FAKTUR ASLI ANDA ADA DI SINI ---
-    // (Saya sertakan kembali agar tidak ada yang hilang)
-
+        document.addEventListener('DOMContentLoaded', function () 
     const flatpickrConfig = {
         dateFormat: "d/m/Y",
         defaultDate: "today",
@@ -416,8 +413,6 @@ footer p.font-semibold {
     for(let i=0; i<1; i++) { addRow(); }
     calculateTotal();
 
-    // --- BAGIAN PENTING UNTUK GOOGLE SHEETS ---
-
     async function simpanKeSheet() {
         const items = [];
         document.querySelectorAll('#invoice-items tr').forEach(row => {
@@ -457,9 +452,6 @@ footer p.font-semibold {
         }
     }
     
-    // HAPUS FUNGSI simpanDanCetak DARI KODE ANDA
-
-    // --- PENGATURAN EVENT LISTENER BARU UNTUK DUA TOMBOL ---
     const saveButton = document.getElementById('save-button');
     if (saveButton) {
         saveButton.addEventListener('click', function(event){
