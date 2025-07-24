@@ -346,7 +346,7 @@ footer p.font-semibold {
     const clientName = this.value.trim(); 
     if (clientName) {
         const clientInitial = clientName.substring(0, 3).toUpperCase();
-        document.title = `FAK[${clientInitial}]_Roviana Printing`;
+        document.title = `FAK[${clientInitial}]-Roviana Printing`;
     } else {
         document.title = originalTitle;
     }
@@ -454,10 +454,10 @@ footer p.font-semibold {
                 mode: 'no-cors'
             });
             console.log('Permintaan untuk menyimpan data telah dikirim.');
-            alert('Data berhasil disimpan ke Google Sheets!'); // Tambahkan notifikasi sukses
+            alert('Data berhasil disimpan ke Google Sheets!'); 
         } catch (error) {
             console.error('Terjadi kesalahan jaringan, data tidak dapat dikirim.', error);
-            alert('Gagal menyimpan data. Periksa koneksi internet Anda.'); // Tambahkan notifikasi gagal
+            alert('Gagal menyimpan data. Periksa koneksi internet Anda.'); 
         }
     }
     
