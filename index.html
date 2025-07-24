@@ -343,9 +343,14 @@ footer p.font-semibold {
     const clientNameInput = document.getElementById('client-name');
     const originalTitle = document.title;
     clientNameInput.addEventListener('input', function() {
-        let clientName = this.value.trim().replace(/[\/\\?%*:|"<>]/g, '');
-        document.title = clientName ? `Faktur_Roviana Printing_${clientName}` : originalTitle;
-    });
+    const clientName = this.value.trim(); 
+    if (clientName) {
+        const clientInitial = clientName.substring(0, 3).toUpperCase();
+        document.title = `FAK${clientInitial}_Roviana Printing`;
+    } else {
+        document.title = originalTitle;
+    }
+});
 
     function formatRupiah(angka) {
         if(isNaN(angka) || angka === 0) return '';
