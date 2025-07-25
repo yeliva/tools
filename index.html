@@ -504,7 +504,7 @@
                 newRow.innerHTML = `
                     <td data-label="No" class="cell-center"><span class="row-number"></span></td>
                     <td data-label="Nama Pesanan"><input type="text" class="table-input input-nama" placeholder="..."></td>
-                    <td data-label="Banyak"><input type="text" class="table-input input-qty cell-center" oninput="calculateTotal()"></td>
+                    <td data-label="Banyak"><input type="number" min="0" class="table-input input-qty" cell-center" oninput="calculateTotal()"></td>
                     <td data-label="Harga Satuan"><input type="text" class="table-input input-price cell-right" oninput="formatInputField(event)"></td>
                     <td data-label="Jumlah" class="cell-right"><span class="total"></span></td>
                 `;
