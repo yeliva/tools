@@ -8,13 +8,13 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#fff">
     <link rel="icon" type="image/png" href="favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Roboto', sans-serif;
             background-color: #e5e7eb;
             display: flex;
             justify-content: center;
@@ -88,6 +88,7 @@
             border-bottom: 1px dotted #374151;
             width: 100%;
             padding: 2px 0;
+            font-family: 'Roboto Mono', monospace;
         }
         .dotted-input-container input:focus {
             outline: none;
@@ -214,6 +215,13 @@
         }
         #uang-muka:focus {
             outline: none;
+        }
+        .main-table .table-input,
+        .summary-table .value,
+        .main-table .total,
+        .row-number,
+        #uang-muka {
+            font-family: 'Roboto Mono', monospace;
         }
         
         @page {
@@ -455,20 +463,23 @@
             };
 
             function renumberRows() {
-                document.querySelectorAll('#invoice-items tr').forEach((row, index) => {
-                    row.cells[0].textContent = index + 1;
-                });
-            }
+    document.querySelectorAll('#invoice-items tr').forEach((row, index) => {
+        const numberCell = row.cells[0].querySelector('.row-number');
+        if (numberCell) {
+            numberCell.textContent = index + 1;
+        }
+    });
+}
 
             function addRow() {
                 const tbody = document.getElementById('invoice-items');
                 const newRow = tbody.insertRow();
                 newRow.innerHTML = `
-                    <td data-label="No" class="cell-center"></td>
+                    <td data-label="No" class="cell-center"><span class="row-number"></span></td>
                     <td data-label="Nama Pesanan"><input type="text" class="table-input input-nama" placeholder="..."></td>
                     <td data-label="Banyak"><input type="text" class="table-input input-qty cell-center" oninput="calculateTotal()"></td>
                     <td data-label="Harga Satuan"><input type="text" class="table-input input-price cell-right" oninput="formatInputField(event)"></td>
-                    <td data-label="Jumlah" class="total cell-right"></td>
+                    <td data-label="Jumlah" class="cell-right"><span class="total"></span></td>
                 `;
                 renumberRows();
                 calculateTotal();
