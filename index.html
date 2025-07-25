@@ -10,7 +10,8 @@
     <link rel="icon" type="image/png" href="favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     <style>
         body {
@@ -90,6 +91,10 @@
             padding: 2px 0;
             font-weight: 600;
             font-family: 'Roboto Mono', monospace;
+        }
+        .dotted-input-container input[readonly] {
+            background-color: #f9fafb;
+            color: #4b5563;
         }
         .dotted-input-container input:focus {
             outline: none;
@@ -221,7 +226,8 @@
         .summary-table .value,
         .main-table .total,
         .row-number,
-        #uang-muka {
+        #uang-muka,
+        #invoice-number {
             font-family: 'Roboto Mono', monospace;
         }
         
@@ -339,6 +345,10 @@
                 <div class="client-info">
                     <h1 class="invoice-title">FAKTUR PESANAN</h1>
                     <div class="dotted-input-container">
+                        <label for="invoice-number">No. Faktur</label>
+                        <input type="text" id="invoice-number" readonly>
+                    </div>
+                    <div class="dotted-input-container">
                         <label for="client-name">Kepada Yth,</label>
                         <input type="text" id="client-name">
                     </div>
@@ -406,8 +416,24 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
    <script>
         document.addEventListener('DOMContentLoaded', function () {
+            function generateInvoiceNumber() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                const day = now.getDate().toString().padStart(2, '0');
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                return `INV/${year}${month}${day}/${hours}${minutes}`;
+            }
+
+            document.getElementById('invoice-number').value = generateInvoiceNumber();
+            
             const flatpickrConfig = {
                 dateFormat: "d/m/Y",
                 defaultDate: "today",
@@ -464,13 +490,13 @@
             };
 
             function renumberRows() {
-    document.querySelectorAll('#invoice-items tr').forEach((row, index) => {
-        const numberCell = row.cells[0].querySelector('.row-number');
-        if (numberCell) {
-            numberCell.textContent = index + 1;
-        }
-    });
-}
+                document.querySelectorAll('#invoice-items tr').forEach((row, index) => {
+                    const numberCell = row.cells[0].querySelector('.row-number');
+                    if (numberCell) {
+                        numberCell.textContent = index + 1;
+                    }
+                });
+            }
 
             function addRow() {
                 const tbody = document.getElementById('invoice-items');
@@ -498,6 +524,7 @@
             for(let i=0; i<1; i++) { addRow(); }
             calculateTotal();
 
+            
             async function simpanKeSheet() {
                 const items = [];
                 document.querySelectorAll('#invoice-items tr').forEach(row => {
@@ -513,6 +540,7 @@
                 });
 
                 const invoiceData = {
+                    nomorFaktur: document.getElementById('invoice-number').value,
                     tanggal: document.getElementById('invoice-date').value,
                     kepada: document.getElementById('client-name').value,
                     telepon: document.getElementById('client-phone').value,
@@ -528,10 +556,24 @@
                         body: JSON.stringify(invoiceData),
                         mode: 'no-cors'
                     });
-                    alert('Data berhasil disimpan ke Google Sheets!'); 
+                    
+                    Toastify({
+                        text: "✔ Data berhasil disimpan ke Google Sheets!",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "center",
+                        style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
+                    }).showToast();
                 } catch (error) {
                     console.error('Terjadi kesalahan jaringan, data tidak dapat dikirim.', error);
-                    alert('Gagal menyimpan data. Periksa koneksi internet Anda.'); 
+                    
+                    Toastify({
+                        text: "Gagal menyimpan. Periksa koneksi internet Anda.",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "center",
+                        style: { background: "#ef4444" }
+                    }).showToast();
                 }
             }
             
