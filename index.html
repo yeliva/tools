@@ -504,7 +504,7 @@
                 newRow.innerHTML = `
                     <td data-label="No" class="cell-center"><span class="row-number"></span></td>
                     <td data-label="Nama Pesanan"><input type="text" class="table-input input-nama" placeholder="..."></td>
-                    <td data-label="Banyak"><input type="number" min="0" class="table-input input-qty" cell-center" oninput="calculateTotal()"></td>
+                    <td data-label="Banyak"><input type="number" min="0" class="table-input input-qty cell-center" oninput="calculateTotal()"></td>
                     <td data-label="Harga Satuan"><input type="text" class="table-input input-price cell-right" oninput="formatInputField(event)"></td>
                     <td data-label="Jumlah" class="cell-right"><span class="total"></span></td>
                 `;
@@ -527,18 +527,39 @@
             
             async function simpanKeSheet() {
                 const items = [];
+                let hasValidItem = false; 
+
                 document.querySelectorAll('#invoice-items tr').forEach(row => {
-                    const namaPesanan = row.querySelector('.input-nama').value;
-                    if (namaPesanan) {
+                
+                    const namaPesanan = row.querySelector('.input-nama').value.trim();
+                    const banyak = row.querySelector('.input-qty').value.trim();
+                    const harga = row.querySelector('.input-price').value.trim();
+
+                    
+                    if (namaPesanan && banyak && parseFloat(banyak) > 0 && harga && parseRupiah(harga) > 0) {
+                        hasValidItem = true; // Set penanda menjadi true jika ada baris valid
                         items.push({
                             nama: namaPesanan,
-                            banyak: row.querySelector('.input-qty').value,
-                            harga: row.querySelector('.input-price').value,
+                            banyak: banyak,
+                            harga: harga,
                             jumlah: row.querySelector('.total').textContent
                         });
                     }
                 });
 
+                
+                if (!hasValidItem) {
+                    Toastify({
+                        text: "Harap isi Nama Pesanan, Banyak, & Harga Satuan",
+                        duration: 3000,
+                        gravity: "top",
+                        position: "center",
+                        style: { background: "linear-gradient(to right, #ff5f6d, #ffc371)" }
+                    }).showToast();
+                    return;
+                }
+
+                
                 const invoiceData = {
                     nomorFaktur: document.getElementById('invoice-number').value,
                     tanggal: document.getElementById('invoice-date').value,
