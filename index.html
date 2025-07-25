@@ -204,6 +204,20 @@
         .summary-table .value-bold {
             font-weight: 700;
         }
+       
+.install-button-wrapper {
+    margin-bottom: 16px;
+}
+
+#install-button {
+    display: none;
+    background-color: #1f2937;
+    font-size: 12pt;
+}
+
+#install-button:hover {
+    background-color: #000;
+}
         #uang-muka {
             border: none;
             background-color: transparent;
@@ -390,6 +404,12 @@
                     </div>
                 </div>
             </footer>
+
+            <div class="install-button-wrapper">
+                <button id="install-button" class="btn btn-full btn-install">
+                    ⬇️ Install Aplikasi
+                </button>
+            </div>
             
             <div class="action-buttons">
                 <button id="save-button" class="btn btn-full btn-save">Simpan ke Sheet</button>
@@ -555,6 +575,29 @@
                 document.getElementById('dp-row').classList.remove('sembunyikan-saat-cetak');
                 document.getElementById('sisa-row').classList.remove('sembunyikan-saat-cetak');
             });
+         let deferredPrompt;
+            const installButton = document.getElementById('install-button');
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installButton.style.display = 'block';
+            });
+
+            installButton.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`Pilihan pengguna: ${outcome}`);
+                    deferredPrompt = null;
+                    installButton.style.display = 'none';
+                }
+            });
+
+            window.addEventListener('appinstalled', () => {
+                deferredPrompt = null;
+                console.log('Aplikasi berhasil diinstal!');
+            });   
         });         
     </script>
     <script>
