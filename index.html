@@ -10,7 +10,6 @@
     <link rel="icon" type="image/png" href="favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     <style>
@@ -44,14 +43,13 @@
             font-size: 12pt;
         }
         .contact-details p {
-            font-size: 9pt;
-            margin-top:-9px;
+            font-size: 10pt;
+            margin-top: -9px;
         }
         .signature-area p {
             font-size: 12pt;
             font-weight: 600;
         }
-
         .invoice-header {
             display: flex;
             justify-content: space-between;
@@ -64,8 +62,12 @@
             align-items: flex-start;
         }
         .contact-details {
-            margin-top: 24px;
+            margin-top: 30px;
             color: #4b5563;
+        }
+        
+        .client-info {
+                margin-top:-5px;
         }
         .invoice-title {
             font-size: 27pt;
@@ -94,14 +96,12 @@
         }
         .dotted-input-container input[readonly] {
             background-color: #f9fafb;
-            color: #4b5563;
         }
         .dotted-input-container input:focus {
             outline: none;
             border-bottom-style: solid;
             border-bottom-color: #3b82f6;
         }
-
         .main-table {
             width: 100%;
             border-collapse: collapse;
@@ -170,7 +170,6 @@
         .btn-save:hover { background-color: #2563eb; }
         .btn-print { background-color: #22c55e; }
         .btn-print:hover { background-color: #16a34a; }
-        
         .invoice-footer {
             margin-top: 32px;
             display: flex;
@@ -178,8 +177,8 @@
             align-items: flex-end;
         }
         .signature-area .stamp {
-            margin-top: 12px;
-            margin-left: 8px;
+            margin-top: -5px;
+            margin-left: 5px;
             height: 80px;
             width: 80px;
             transform: rotate(-10deg);
@@ -296,7 +295,7 @@
                 border: 1px solid #ddd;
                 border-radius: 8px;
                 margin-bottom: 16px;
-                padding: 10px;
+                padding: 10px;       
             }
             .main-table td {
                 display: flex;
@@ -308,7 +307,7 @@
                 text-align: right;
             }
             .main-table td:last-child {
-                border-bottom: none;
+                border-bottom: none;    
             }
             .main-table td::before {
                 content: attr(data-label);
@@ -318,6 +317,7 @@
             }
             .main-table .table-input {
                 width: 50%;
+                text-align: left;
             }
             .invoice-footer {
                 flex-direction: column-reverse;
@@ -335,7 +335,7 @@
         <div class="invoice-body">
             <header class="invoice-header">
                 <div class="company-info"> 
-                    <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/logo_rp.svg" alt="Logo Roviana Printing" width="260">
+                    <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/logo_rp.svg" alt="Logo Roviana Printing" width="310">
                     <div class="contact-details">
                         <p>0853 2230 7373</p>
                         <p>www.rovianaprinting.com</p>
@@ -398,7 +398,7 @@
                             <tr id="dp-row">
                                 <td class="label">Uang Muka</td>
                                 <td class="value">
-                                    <input type="text" id="uang-muka" oninput="formatInputField(event)">
+                                    <input type="text" id="uang-muka" oninput="formatInputField(event)"  placeholder="...">
                                 </td>
                             </tr>
                             <tr id="sisa-row">
@@ -424,12 +424,12 @@
         document.addEventListener('DOMContentLoaded', function () {
             function generateInvoiceNumber() {
                 const now = new Date();
-                const year = now.getFullYear();
+                const year = now.getFullYear().toString().slice(-2);
                 const month = (now.getMonth() + 1).toString().padStart(2, '0');
                 const day = now.getDate().toString().padStart(2, '0');
                 const hours = now.getHours().toString().padStart(2, '0');
                 const minutes = now.getMinutes().toString().padStart(2, '0');
-                return `INV/${year}${month}${day}/${hours}${minutes}`;
+                return `FRP/${year}${month}${day}/${hours}${minutes}`;
             }
 
             document.getElementById('invoice-number').value = generateInvoiceNumber();
@@ -504,8 +504,8 @@
                 newRow.innerHTML = `
                     <td data-label="No" class="cell-center"><span class="row-number"></span></td>
                     <td data-label="Nama Pesanan"><input type="text" class="table-input input-nama" placeholder="..."></td>
-                    <td data-label="Banyak"><input type="number" min="0" class="table-input input-qty cell-center" oninput="calculateTotal()"></td>
-                    <td data-label="Harga Satuan"><input type="text" class="table-input input-price cell-right" oninput="formatInputField(event)"></td>
+                    <td data-label="Banyak"><input type="number" min="0" class="table-input input-qty cell-center" oninput="calculateTotal()"  placeholder="..."></td>
+                    <td data-label="Harga Satuan"><input type="text" class="table-input input-price cell-right" oninput="formatInputField(event)"  placeholder="..."></td>
                     <td data-label="Jumlah" class="cell-right"><span class="total"></span></td>
                 `;
                 renumberRows();
@@ -537,7 +537,7 @@
 
                     
                     if (namaPesanan && banyak && parseFloat(banyak) > 0 && harga && parseRupiah(harga) > 0) {
-                        hasValidItem = true; // Set penanda menjadi true jika ada baris valid
+                        hasValidItem = true;
                         items.push({
                             nama: namaPesanan,
                             banyak: banyak,
@@ -550,7 +550,7 @@
                 
                 if (!hasValidItem) {
                     Toastify({
-                        text: "Harap isi Nama Pesanan, Banyak, & Harga Satuan",
+                        text: "Harap isi Nama, Banyak, & Harga pada minimal satu baris.",
                         duration: 3000,
                         gravity: "top",
                         position: "center",
