@@ -50,6 +50,7 @@
             font-size: 12pt;
             font-weight: 600;
         }
+        
         .invoice-header {
             display: flex;
             justify-content: space-between;
@@ -68,7 +69,7 @@
         
         .client-info {
                 margin-top:-5px;
-        }
+            }
         .invoice-title {
             font-size: 27pt;
             font-weight: 600;
@@ -81,17 +82,24 @@
             align-items: center;
             margin-top:2px;
         }
+        
         .dotted-input-container label {
             width: 100px;
             flex-shrink: 0;
             margin-right: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .dotted-input-container label::after {
+            content: ':'; 
+            margin-left:15px;
         }
         .dotted-input-container input {
             border: none;
             border-bottom: 1px dotted #374151;
             width: 100%;
             padding: 2px 0;
-            font-weight: 600;
+            font-weight: 500;
             font-family: 'Roboto Mono', monospace;
         }
         .dotted-input-container input[readonly] {
@@ -102,6 +110,7 @@
             border-bottom-style: solid;
             border-bottom-color: #3b82f6;
         }
+
         .main-table {
             width: 100%;
             border-collapse: collapse;
@@ -170,6 +179,7 @@
         .btn-save:hover { background-color: #2563eb; }
         .btn-print { background-color: #22c55e; }
         .btn-print:hover { background-color: #16a34a; }
+        
         .invoice-footer {
             margin-top: 32px;
             display: flex;
@@ -182,6 +192,14 @@
             height: 80px;
             width: 80px;
             transform: rotate(-10deg);
+        }
+        .thank-you-note {
+            margin-top: 40px;
+        }
+        .thank-you-note p {
+            font-size: 10pt;
+            font-style: italic; 
+            color: #4b5563;
         }
         .summary-wrapper {
             width: 33.33%;
@@ -295,7 +313,8 @@
                 border: 1px solid #ddd;
                 border-radius: 8px;
                 margin-bottom: 16px;
-                padding: 10px;       
+                padding: 10px;
+                
             }
             .main-table td {
                 display: flex;
@@ -307,7 +326,8 @@
                 text-align: right;
             }
             .main-table td:last-child {
-                border-bottom: none;    
+                border-bottom: none;
+                
             }
             .main-table td::before {
                 content: attr(data-label);
@@ -345,19 +365,19 @@
                 <div class="client-info">
                     <h1 class="invoice-title">FAKTUR PESANAN</h1>
                     <div class="dotted-input-container">
-                        <label for="invoice-number">No. Faktur</label>
+                        <label for="invoice-number"><span>No. Faktur</span></label>
                         <input type="text" id="invoice-number" readonly>
                     </div>
                     <div class="dotted-input-container">
-                        <label for="client-name">Kepada Yth,</label>
+                        <label for="client-name"><span>Kepada</span></label>
                         <input type="text" id="client-name">
                     </div>
                     <div class="dotted-input-container">
-                        <label for="invoice-date">Tgl.</label>
+                        <label for="invoice-date"><span>Tanggal</span></label>
                         <input type="text" id="invoice-date">
                     </div>
                     <div class="dotted-input-container">
-                        <label for="client-phone">Tlp.</label>
+                        <label for="client-phone"><span>No. Telp</span></label>
                         <input type="text" id="client-phone">
                     </div>
                 </div>
@@ -385,6 +405,7 @@
 
             <footer class="invoice-footer">
                 <div class="signature-area">
+                    
                     <p>Hormat Kami,</p>
                     <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/rp_stempel_merah.png" alt="Stempel Original" class="stamp"> 
                 </div>
@@ -409,6 +430,11 @@
                     </div>
                 </div>
             </footer>
+            
+            <div class="thank-you-note">
+                        <p>Terima kasih telah mempercayakan kebutuhan cetak Anda kepada Roviana Printing! 
+                        </p>
+                        </div>
             
             <div class="action-buttons">
                 <button id="save-button" class="btn btn-full btn-save">Simpan ke Sheet</button>
