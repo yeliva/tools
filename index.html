@@ -66,10 +66,6 @@
             margin-top: 30px;
             color: #4b5563;
         }
-        
-        .client-info {
-                margin-top:-5px;
-            }
         .invoice-title {
             font-size: 27pt;
             font-weight: 600;
@@ -77,10 +73,18 @@
             margin-bottom: 8px;
             margin-top: 0;
         }
+
+        .client-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px; 
+        }
+
+        .client-info h1 { margin-bottom: 8px; } 
+
         .dotted-input-container {
             display: flex;
             align-items: center;
-            margin-top:2px;
         }
         
         .dotted-input-container label {
@@ -88,22 +92,22 @@
             flex-shrink: 0;
             margin-right: 10px;
             display: flex;
+            white-space: nowrap;
             justify-content: space-between;
         }
         .dotted-input-container label::after {
             content: ':'; 
-            margin-left:15px;
+            margin-left:20px;
+            
         }
         .dotted-input-container input {
             border: none;
             border-bottom: 1px dotted #374151;
             width: 100%;
             padding: 2px 0;
+            font-size:12pt;
             font-weight: 500;
-            font-family: 'Roboto Mono', monospace;
-        }
-        .dotted-input-container input[readonly] {
-            background-color: #f9fafb;
+            font-family: 'Roboto Mono', monospace
         }
         .dotted-input-container input:focus {
             outline: none;
@@ -134,6 +138,7 @@
             width: 100%;
             border: none;
             padding: 0 4px;
+            font-size:12pt;
             background-color: transparent;
         }
         .main-table .table-input:focus {
@@ -224,6 +229,7 @@
         .summary-table .value {
             text-align: right;
             font-weight: 500;
+            font-size:12pt;
         }
         .summary-table .value-bold {
             font-weight: 700;
@@ -235,6 +241,7 @@
             width: 100%;
             text-align: right;
             font-weight: 500;
+            font-size:12pt;
         }
         #uang-muka:focus {
             outline: none;
@@ -303,7 +310,7 @@
                 text-align:left;
             }
             .dotted-input-container label {
-                width: 80px;
+                width: 100px;
             }
             .main-table thead {
                 display: none;
@@ -348,11 +355,94 @@
                 width: 100%;
             }
         }
+        
+        .force-desktop .invoice-header {
+            flex-direction: row !important;
+        }
+        .force-desktop .client-info {
+            width: auto !important;
+        }
+        .force-desktop .main-table thead {
+            display: table-header-group !important;
+        }
+        .force-desktop .main-table tr {
+            display: table-row !important;
+            border: none !important;
+            border-radius: 0 !important;
+            margin-bottom: 0 !important;
+            padding: 0 !important;
+        }
+        .force-desktop .main-table td {
+            display: table-cell !important;
+            justify-content: initial !important;
+            align-items: initial !important;
+            border: 1px solid #d1d5db !important;
+            padding: 8px !important;
+            text-align: left;
+        }
+        .force-desktop .main-table td::before {
+            content: none !important;
+        }
+        .force-desktop .main-table .cell-center,
+        .force-desktop .main-table .input-qty {
+            text-align: center !important;
+        }
+        .force-desktop .main-table .cell-right,
+        .force-desktop .main-table .input-price {
+            text-align: right !important;
+        }
+        .force-desktop .main-table .table-input {
+            width: 100% !important;
+            text-align: left;
+        }
+        .force-desktop .invoice-footer {
+            flex-direction: row !important;
+            align-items: flex-end !important;
+        }
+        .force-desktop .summary-wrapper {
+            width: 33.33% !important;
+        }
+        .force-desktop .invoice-title {
+            font-size:27pt;
+        }
+        
+        .invoice-body.force-desktop {
+            padding: 38px !important;
+        }
+
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 14pt;
+            color: #374151;
+        }
+        .spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #3b82f6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="invoice-container">
-        <div class="invoice-body">
+        <div class="invoice-body" id="invoice-to-print">
             <header class="invoice-header">
                 <div class="company-info"> 
                     <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/logo_rp.svg" alt="Logo Roviana Printing" width="310">
@@ -405,7 +495,6 @@
 
             <footer class="invoice-footer">
                 <div class="signature-area">
-                    
                     <p>Hormat Kami,</p>
                     <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/rp_stempel_merah.png" alt="Stempel Original" class="stamp"> 
                 </div>
@@ -432,21 +521,21 @@
             </footer>
             
             <div class="thank-you-note">
-                        <p>Terima kasih telah mempercayakan kebutuhan cetak Anda kepada Roviana Printing! 
-                        </p>
-                        </div>
+                <p>Terima kasih telah mempercayakan kebutuhan cetak Anda kepada Roviana Printing!</p>
+            </div>
             
             <div class="action-buttons">
                 <button id="save-button" class="btn btn-full btn-save">Simpan ke Sheet</button>
-                <button id="print-only-button" class="btn btn-full btn-print">Cetak Faktur</button>
+                <button id="download-pdf-button" class="btn btn-full btn-print">Download PDF</button>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-   <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function () {
             function generateInvoiceNumber() {
                 const now = new Date();
@@ -466,18 +555,6 @@
                 allowInput: true
             };
             let flatpickrInstance = flatpickr("#invoice-date", flatpickrConfig);
-
-            const clientNameInput = document.getElementById('client-name');
-            const originalTitle = document.title;
-            clientNameInput.addEventListener('input', function() {
-                const clientName = this.value.trim(); 
-                if (clientName) {
-                    const clientInitial = clientName.substring(0, 3).toUpperCase();
-                    document.title = `FAK[${clientInitial}]-Roviana Printing`;
-                } else {
-                    document.title = originalTitle;
-                }
-            });
 
             function formatRupiah(angka) {
                 if(isNaN(angka) || angka === 0) return '';
@@ -549,7 +626,6 @@
 
             for(let i=0; i<1; i++) { addRow(); }
             calculateTotal();
-
             
             async function simpanKeSheet() {
                 const items = [];
@@ -560,7 +636,6 @@
                     const namaPesanan = row.querySelector('.input-nama').value.trim();
                     const banyak = row.querySelector('.input-qty').value.trim();
                     const harga = row.querySelector('.input-price').value.trim();
-
                     
                     if (namaPesanan && banyak && parseFloat(banyak) > 0 && harga && parseRupiah(harga) > 0) {
                         hasValidItem = true;
@@ -572,7 +647,6 @@
                         });
                     }
                 });
-
                 
                 if (!hasValidItem) {
                     Toastify({
@@ -584,7 +658,6 @@
                     }).showToast();
                     return;
                 }
-
                 
                 const invoiceData = {
                     nomorFaktur: document.getElementById('invoice-number').value,
@@ -632,31 +705,84 @@
                 });
             }
 
-            const printOnlyButton = document.getElementById('print-only-button');
-            if (printOnlyButton) {
-                printOnlyButton.addEventListener('click', function(event){
-                    event.preventDefault();
-                    window.print();
-                });
-            }
+            document.getElementById('download-pdf-button').addEventListener('click', function(event) {
+                event.preventDefault();
 
-            window.addEventListener('beforeprint', () => {
-                if (flatpickrInstance) {
-                    flatpickrInstance.destroy();
-                }
-                const uangMukaValue = parseRupiah(document.getElementById('uang-muka').value) || 0;
-                if (uangMukaValue === 0) {
-                    document.getElementById('dp-row').classList.add('sembunyikan-saat-cetak');
-                    document.getElementById('sisa-row').classList.add('sembunyikan-saat-cetak');
-                }
-            });
+                const originalElement = document.getElementById('invoice-to-print');
+                const loadingOverlay = document.getElementById('loading-overlay');
+                const tableControls = document.querySelector('.table-controls');
+                const actionButtons = document.querySelector('.action-buttons');
+                
+                const clientName = document.getElementById('client-name').value.trim() || 'Customer';
+                const invoiceNumber = document.getElementById('invoice-number').value.replace(/\//g, '-');
+                const fileName = `Faktur - ${clientName} - ${invoiceNumber}.pdf`;
+                const opt = {
+                    margin:       [10, 10, 10, 10],
+                    filename:     fileName,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true, logging: false },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                };
 
-            window.addEventListener('afterprint', () => {
-                flatpickrInstance = flatpickr("#invoice-date", flatpickrConfig);
-                document.getElementById('dp-row').classList.remove('sembunyikan-saat-cetak');
-                document.getElementById('sisa-row').classList.remove('sembunyikan-saat-cetak');
+                loadingOverlay.style.display = 'flex';
+                
+                setTimeout(() => {
+                    const originalDpDisplay = document.getElementById('dp-row').style.display;
+                    const originalSisaDisplay = document.getElementById('sisa-row').style.display;
+                    const originalTableControlsDisplay = tableControls.style.display;
+                    const originalActionButtonsDisplay = actionButtons.style.display;
+
+                    if (flatpickrInstance) {
+                        flatpickrInstance.destroy();
+                    }
+
+                    tableControls.style.display = 'none';
+                    actionButtons.style.display = 'none';
+                    originalElement.classList.add('force-desktop');
+
+                    const uangMukaValue = parseRupiah(document.getElementById('uang-muka').value) || 0;
+                    if (uangMukaValue === 0) {
+                        document.getElementById('dp-row').style.display = 'none';
+                        document.getElementById('sisa-row').style.display = 'none';
+                    }
+                    
+                    const inputsToClean = document.querySelectorAll('.dotted-input-container input');
+                    inputsToClean.forEach(input => input.style.borderBottom = 'none');
+                    
+                    html2pdf().from(originalElement).set(opt).save()
+                    .then(() => {
+                        Toastify({
+                            text: "✔ Faktur berhasil diunduh!",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "center",
+                            style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
+                        }).showToast();
+                    })
+                    .finally(() => {
+                        originalElement.classList.remove('force-desktop');
+                        
+                        document.getElementById('dp-row').style.display = originalDpDisplay;
+                        document.getElementById('sisa-row').style.display = originalSisaDisplay;
+                        inputsToClean.forEach(input => input.style.borderBottom = '');
+                        
+                        tableControls.style.display = originalTableControlsDisplay;
+                        actionButtons.style.display = originalActionButtonsDisplay;
+
+                        flatpickrInstance = flatpickr("#invoice-date", flatpickrConfig);
+
+                        loadingOverlay.style.display = 'none';
+                    });
+
+                }, 100); 
             });
         });         
     </script>
+    
+    <div id="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Membuat PDF...</p>
+    </div>
+
 </body>
 </html>
