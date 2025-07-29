@@ -410,6 +410,26 @@
             padding: 38px !important;
         }
 
+        body.pdf-generation-active {
+            display: block !important;
+            height: auto !important;
+            min-height: 0 !important;
+        }
+
+        .invoice-body.force-desktop {
+            display: block !important;
+        }
+
+        .force-desktop .main-table {
+            page-break-inside: auto;
+            break-inside: auto;
+        }
+
+        .force-desktop .main-table tr {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
         #loading-overlay {
             position: fixed;
             top: 0;
@@ -719,6 +739,7 @@
                 const opt = {
                     margin:       [10, 10, 10, 10],
                     filename:     fileName,
+                    pagebreak:    { mode: ['css', 'legacy'] },
                     image:        { type: 'jpeg', quality: 0.98 },
                     html2canvas:  { scale: 2, useCORS: true, logging: false },
                     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
@@ -731,6 +752,8 @@
                     const originalSisaDisplay = document.getElementById('sisa-row').style.display;
                     const originalTableControlsDisplay = tableControls.style.display;
                     const originalActionButtonsDisplay = actionButtons.style.display;
+
+                    document.body.classList.add('pdf-generation-active');
 
                     if (flatpickrInstance) {
                         flatpickrInstance.destroy();
@@ -760,6 +783,8 @@
                         }).showToast();
                     })
                     .finally(() => {
+                        document.body.classList.remove('pdf-generation-active');
+                        
                         originalElement.classList.remove('force-desktop');
                         
                         document.getElementById('dp-row').style.display = originalDpDisplay;
