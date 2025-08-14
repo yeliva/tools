@@ -1,6 +1,6 @@
 {
-  "name": "Tool Roviana Printing",
-  "short_name": "Faktur RP",
+  "name": "Tools Roviana Printing",
+  "short_name": "Tools RP",
   "description": "Aplikasi untuk membuat faktur pesanan dan surat penawaran untuk Roviana Printing.",
   "start_url": ".",
   "display": "standalone",
