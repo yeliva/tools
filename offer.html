@@ -174,23 +174,32 @@
         .closing-section {
             margin-top: 20px;
         }
+        
+        .total-wrapper {
+            width: 40%;
+            margin-top:20px;
+            margin-left: auto;
+        }
+        .total-box {
+            background-color: #f9fafb;
+            padding: 8px;
+            border-radius: 8px;
+        }
         .total-table {
             width: 100%;
-            border-collapse: collapse;
         }
         .total-label {
             font-weight: 500;
             font-size: 12pt;
-            text-align: right;
+            text-align: left;
             padding-right: 20px;
-            width: 79.2%;
+            width: 20%;
             
         }
         .total-value {
             font-weight: 500;
             font-size: 12pt;
             width: 20%;
-            padding: 8px;
             text-align: right;
             
         }
@@ -475,9 +484,9 @@
                     <button id="remove-row" class="btn btn-remove">- Kurangi Baris</button>
                 </div>
             </main>
-
-            <div class="closing-section">
-                <table class="total-table">
+            <div class="total-wrapper">
+                <div class="total-box">
+                    <table class="total-table">
                     <tbody>
                         <tr>
                             <td class="total-label">Total</td>
@@ -485,7 +494,10 @@
                         </tr>
                     </tbody>
                 </table>
-        
+                </div>
+            </div>    
+
+            <div class="closing-section">
                 <div class="payment-terms">
                     <p><strong>Ketentuan Pembayaran:</strong></p>
                     <p>Diperlukan pembayaran uang muka sebesar 50% sebelum proses produksi dan pelunasan dilakukan sebelum barang diambil/dikirim </p>
