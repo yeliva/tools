@@ -262,6 +262,7 @@
             .info-input {
                 border-bottom: none;
             }
+            /* Aturan ini seharusnya sudah cukup, tapi metode JS lebih pasti */
             .table-controls, .action-buttons {
                 display: none;
             }
@@ -343,7 +344,6 @@
                 text-align: right;
             }
         }
-        
         .force-desktop .offer-header {
             flex-direction: row !important;
             align-items: center !important;
@@ -598,16 +598,14 @@
                 const element = document.getElementById('offer-to-print');
                 const loadingOverlay = document.getElementById('loading-overlay');
                 const dateInput = document.getElementById('offer-date');
+                // **PERUBAHAN BARU**: Ambil elemen tombol kontrol
                 const tableControls = document.querySelector('.table-controls');
                 const actionButtons = document.querySelector('.action-buttons');
                 
                 loadingOverlay.style.display = 'flex';
                 
                 setTimeout(() => {
-                    const originalWidth = offerContainer.style.width;
-                    const originalMaxWidth = offerContainer.style.maxWidth;
-                    offerContainer.style.width = '794px';
-                    offerContainer.style.maxWidth = '794px';
+                    // **PERUBAHAN BARU**: Sembunyikan tombol kontrol
                     tableControls.style.display = 'none';
                     actionButtons.style.display = 'none';
 
@@ -653,6 +651,7 @@
                         element.classList.remove('force-desktop');
                         loadingOverlay.style.display = 'none';
                         
+                        // **PERUBAHAN BARU**: Tampilkan kembali tombol kontrol
                         tableControls.style.display = 'flex';
                         actionButtons.style.display = 'flex';
 
