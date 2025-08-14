@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#fff">
     <title>Penawaran Harga - Roviana Printing</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
@@ -19,14 +19,14 @@
             align-items: flex-start;
             min-height: 100vh;
             margin: 0;
-            padding: 38px;
+            padding: 32px;
             box-sizing: border-box;
             font-size: 12pt;
         }
         
         .offer-container {
             width: 100%;
-            max-width: 794px;
+            max-width: 210mm;
             background: #fff;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             display: flex;
@@ -258,7 +258,7 @@
         @media print {
             body {
                 background-color: #fff;
-                padding: 38px;
+                padding:0;
             }
             .offer-container {
                 max-width: 100%;
@@ -349,6 +349,10 @@
                 text-align: right;
             }
         }
+        .offer-body.force-desktop {
+            padding: 38px !important;
+        }
+
         .force-desktop .offer-header {
             flex-direction: row !important;
             align-items: center !important;
@@ -400,9 +404,6 @@
 
         .force-desktop .main-table .table-input {
             width: 100% !important;
-        }
-        .force-desktop .offer-body {
-            padding: 38px !important;
         }
 
     </style>
@@ -628,7 +629,7 @@
                     const clientName = document.getElementById('client-name').value.trim() || 'Customer';
                     const fileName = `Penawaran Harga - ${clientName}.pdf`;
                     const opt = {
-                        margin: [10, 10, 10, 10],
+                        margin: [1, 1, 1, 1],
                         filename: fileName,
                         image: { type: 'jpeg', quality: 0.98 },
                         html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
