@@ -3,54 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tools Roviana Printing</title>
+    <title>Tools - Roviana Printing</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#fff">
+    <meta name="theme-color" content="#4a90e2">
     <link rel="icon" type="image/png" href="favicon.png">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
     <style>
-        
         body {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            font-family:'Roboto', sans-serif;
-            background-color: #f0f2f5;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+            background-image: linear-gradient(to top right, #e9f2fa, #f4f7f6);
+            padding: 20px;
+            box-sizing: border-box;
         }
-        .container {
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
             text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .btn {
-            display: inline-block;
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            margin-bottom: 30px;
+        }
+
+        .card-header img {
+            max-width: 150px;
+            margin-bottom: 15px;
+        }
+
+        .card-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333333;
+            margin: 0 0 10px 0;
+        }
+
+        .card-header p {
+            font-size: 16px;
+            color: #777777;
+            margin: 0;
+        }
+        
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .tool-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-decoration: none;
             color: #ffffff;
-            background-color: #007bff;
-            padding: 15px 30px;
-            margin: 10px;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: background-color 0.3s;
+            padding: 18px 25px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            gap: 12px;
         }
-        .btn:hover {
-            background-color: #0056b3;
+
+        .tool-button i {
+            font-size: 20px;
         }
+
+        .tool-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-invoice {
+            background-color: #4a90e2;
+        }
+        .btn-invoice:hover {
+            background-color: #357ABD;
+        }
+
         .btn-offer {
-            background-color: #28a745;
+            background-color: #50e3c2;
         }
         .btn-offer:hover {
-            background-color: #218838;
+            background-color: #38a89d;
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <a href="invoice.html" class="btn">Buat Faktur</a>
-
-        <a href="offer.html" class="btn btn-offer">Buat Penawaran</a>
+    <div class="card">
+        <div class="card-header">
+            <h1>Roviana Printing Tools</h1>
+            <p>Pilih alat yang ingin Anda gunakan.</p>
+        </div>
+        <div class="card-body">
+            <a href="invoice.html" class="tool-button btn-invoice">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+                <span>Buat Faktur</span>
+            </a>
+            <a href="offer.html" class="tool-button btn-offer">
+                <i class="fa-solid fa-file-signature"></i>
+                <span>Buat Penawaran</span>
+            </a>
+        </div>
     </div>
-
 </body>
 </html>
