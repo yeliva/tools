@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penawaran Harga - Roviana Printing</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e5e7eb;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 32px;
+            box-sizing: border-box;
+            font-size: 12pt;
+        }
+        
+        .offer-container {
+            width: 100%;
+            max-width: 794px;
+            background: #fff;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .offer-body {
+            padding: 38px;
+            flex-grow: 1;
+        }
+
+        .offer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+        }
+        .company-contact {
+            text-align: right;
+            font-size: 10pt;
+        }
+        .company-contact p {
+            margin: 2px 0;
+        }
+        .company-contact img {
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        .header-divider {
+            border: 0;
+            border-top: 1px solid #333;
+            margin-bottom: 20px;
+        }
+        .addressing-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .recipient-info {
+            width: 60%;
+            margin-bottom: 0;
+        }
+        .info-line {
+            display: flex;
+        }
+        .info-label {
+            text-align:right
+        }
+        .info-input {
+            border: none;
+            font-size: 12pt;
+            font-family: 'Roboto', sans-serif;
+            padding:0;
+            margin-top:8px;
+        }
+        .date-input{
+            border: none;
+            font-size: 12pt;
+            font-family: 'Roboto', sans-serif;
+            padding:0;
+            margin-left:4px;
+        }
+        .info-input:focus {
+            outline: none;
+            border-bottom-style: none;
+        }
+        .subject-line {
+            font-weight:500;
+        }
+        .recipient-label {
+            margin-top:20px;
+            font-weight:500;
+        }
+        #offer-date {
+            text-align:right;
+        }
+        #client-name {
+            width: 300px; 
+            display: block;
+        }
+        .opening-statement {
+            margin-bottom: 25px;
+            font-size: 12pt;
+        }
+
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .main-table th, .main-table td {
+            border: 1px solid #fff;
+            padding: 8px;
+            height: 23px;
+        }
+        .main-table th {
+            background-color: #5c6bc0; 
+            color: white;
+            text-align: center;
+            font-weight: 500;
+        }
+        .main-table th.col-no { width: 5%; }
+        .main-table th.col-nama { width: 45%; }
+        .main-table th.col-qty {width:10%;}
+        .main-table th.col-lain {width:20%;}
+        .main-table .table-input {
+            width: 100%;
+            border: none;
+            padding: 0 4px;
+            font-size:12pt;
+            background-color: transparent;
+        }
+        .main-table .table-input:focus {
+            outline: none;
+            background-color: #eff6ff;
+        }
+        .cell-center { text-align: center; }
+        .cell-right { text-align: right; }
+
+        .table-controls {
+            margin-top: 16px;
+            display: flex;
+            gap: 8px;
+        }
+        .btn {
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 12px;
+            color: white;
+            cursor: pointer;
+        }
+        .btn-add { background-color: #6366f1; }
+        .btn-add:hover { background-color: #4f46e5; }
+        .btn-remove { background-color: #ef4444; }
+        .btn-remove:hover { background-color: #dc2626; }
+        
+        .closing-section {
+            margin-top: 20px;
+        }
+        .total-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .total-label {
+            font-weight: 500;
+            font-size: 12pt;
+            text-align: right;
+            padding-right: 20px;
+            width: 79.2%;
+        }
+        .total-value {
+            font-weight: 500;
+            font-size: 12pt;
+            width: 20%;
+            padding: 8px;
+            text-align: right;
+        }
+        .payment-terms {
+            margin-top: 30px;
+            font-size: 12pt;
+        }
+        .signature-area {
+            margin-top: 30px;
+        }
+        .signature-area p {
+            font-size: 12pt;
+            font-weight: 600;
+        }
+        .signature-area .stamp {
+            margin-top: 5px;
+            height: 80px;
+            width: auto;
+        }
+
+        .action-buttons {
+            margin-top: 32px;
+            display: flex;
+            gap: 16px;
+        }
+        .btn-full {
+            width: 100%;
+            padding: 15px 24px;
+        }
+        .btn-print { background-color: #22c55e; }
+        .btn-print:hover { background-color: #16a34a; }
+        
+        .main-table .table-input,
+        .total-value,
+        .main-table .total,
+        .row-number {
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        @page {
+            size: A4 portrait;
+            margin: 38px;
+        }
+        @media print {
+            body {
+                background-color: #fff;
+                padding: 0;
+            }
+            .offer-container {
+                max-width: 100%;
+                box-shadow: none;
+            }
+            .info-input {
+                border-bottom: none;
+            }
+            .table-controls, .action-buttons {
+                display: none;
+            }
+            .main-table th {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            body {
+                padding: 0;
+            }
+            .offer-container {
+                box-shadow: none;
+            }
+            .offer-body {
+                padding: 16px;
+            }
+
+            .offer-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .company-contact {
+                text-align: left;
+            }
+
+            .addressing-section {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .recipient-info, .date-section {
+                width: 100%;
+            }
+            .info-line {
+                justify-content: flex-start;
+            }
+            #offer-date, .info-label {
+                text-align: left;
+            }
+
+            .main-table thead {
+                display: none;
+            }
+
+            .main-table tr {
+                display: block;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                margin-bottom: 16px;
+                padding: 10px;
+            }
+
+            .main-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border: none;
+                border-bottom: 1px solid #eee;
+                padding: 12px 5px;
+                text-align: right;
+            }
+            .main-table td:last-child {
+                border-bottom: none;
+            }
+
+            .main-table td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                padding-right: 10px;
+            }
+            .main-table .table-input {
+                width: 50%;
+                text-align: right;
+            }
+            .cell-center {
+                text-align: right;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offer-container">
+        <div class="offer-body" id="offer-to-print">
+            
+            <header class="offer-header">
+                <div class="company-info"> 
+                    <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/logo_rp.svg" alt="Logo Roviana Printing" width="250">
+                </div>
+                <div class="company-contact">
+                    <p>0853-2230-7373</p>
+                    <p>seviaprinting@gmail.com</p>
+                    <p>www.rovianaprinting.com</p>
+                    <p>Jl. Waru No 14 - Rawamangun - Jakarta Timur</p>
+                </div>
+            </header>
+            <hr class="header-divider">
+
+            <div class="addressing-section">
+                <div class="recipient-info">
+                    <div class="subject-line">
+                        <span class="subject-label">Perihal:</span>
+                        <input type="text" id="offer-subject" class="info-input" placeholder="...">
+                    </div>
+                    <div class="recipient-label">Kepada Yth,</div>
+                    <input type="text" id="client-name" class="info-input" placeholder="...">
+                </div>
+                <div class="date-section">
+                    <div class="info-line">
+                        <span class="info-label">Jakarta,</span>
+                        <input type="text" id="offer-date" class="date-input">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="opening-statement">
+                <p>Dengan hormat,</p>
+                <p>Bersama surat penawaran ini, kami dari <strong>Roviana Printing</strong> bermaksud menyampaikan penawaran harga dengan spesifikasi sebagai berikut:</p>
+            </div>
+
+            <main>
+                <table class="main-table">
+                    <thead>
+                        <tr>
+                            <th class="col-no">No</th>
+                            <th class="col-nama">Jenis Barang</th>
+                            <th class="col-qty">Banyak</th>
+                            <th class="col-lain">Harga Satuan</th>
+                            <th class="col-lain">Jumlah</th>
+                        </tr>
+                    </thead>
+                    <tbody id="offer-items"></tbody>
+                </table>
+                <div class="table-controls">
+                    <button id="add-row" class="btn btn-add">+ Tambah Baris</button>
+                    <button id="remove-row" class="btn btn-remove">- Kurangi Baris</button>
+                </div>
+            </main>
+
+            <div class="closing-section">
+                <table class="total-table">
+                    <tbody>
+                        <tr>
+                            <td class="total-label">Total</td>
+                            <td class="total-value" id="subtotal"></td>
+                        </tr>
+                    </tbody>
+                </table>
+        
+                <div class="payment-terms">
+                    <p>Untuk prosedur minimal DP 50% Sebelum naik cetak dan <strong>sisa dibayarkan sebelum barang di Ambil/Kirim</strong>.</p>
+                    <p>Demikian Surat Penawaran ini kami sampaikan, atas waktu dan perhatian yang diberikan kami ucapkan banyak terimakasih.</p>
+                </div>
+        
+                <div class="signature-area">
+                    <p>Hormat kami,</p>
+                    <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/rp_stempel_merah.png" alt="Stempel" class="stamp"> 
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="download-pdf-button" class="btn btn-full btn-print">Download PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const ruler = document.createElement('span');
+            ruler.style.visibility = 'hidden';
+            ruler.style.position = 'absolute';
+            ruler.style.whiteSpace = 'nowrap';
+            document.body.appendChild(ruler);
+
+            function adjustInputWidth(inputElement) {
+                const inputStyles = window.getComputedStyle(inputElement);
+                ruler.style.font = inputStyles.font;
+                ruler.style.padding = inputStyles.padding;
+                ruler.textContent = inputElement.value || inputElement.placeholder;
+                inputElement.style.width = (ruler.offsetWidth + 2) + 'px';
+            }
+            
+            flatpickr("#offer-date", {
+                dateFormat: "d F Y",
+                defaultDate: "today",
+                allowInput: true,
+                onChange: function(selectedDates, dateStr, instance) {
+                    adjustInputWidth(instance.input);
+                },
+                onReady: function(selectedDates, dateStr, instance) {
+                    adjustInputWidth(instance.input);
+                }
+            });
+
+            function formatRupiah(angka) {
+                if(isNaN(angka) || angka === null || angka === 0) return '';
+                return 'Rp ' + new Intl.NumberFormat('id-ID').format(angka);
+            }
+
+            function parseRupiah(rupiahString) {
+                if (typeof rupiahString !== 'string') return 0;
+                return Number(rupiahString.replace(/[^0-9]/g, ''));
+            }
+
+            window.calculateTotal = function () {
+                let subtotal = 0;
+                document.querySelectorAll('#offer-items tr').forEach(row => {
+                    const qtyInput = row.querySelector('.input-qty');
+                    const priceInput = row.querySelector('.input-price');
+                    const totalCell = row.querySelector('.total');
+                    if (qtyInput && priceInput && totalCell) {
+                        const qty = parseFloat(qtyInput.value) || 0;
+                        const price = parseRupiah(priceInput.value) || 0;
+                        const lineTotal = qty * price;
+                        totalCell.textContent = lineTotal > 0 ? 'Rp ' + new Intl.NumberFormat('id-ID').format(lineTotal) : '';
+                        subtotal += lineTotal;
+                    }
+                });
+                document.getElementById('subtotal').textContent = formatRupiah(subtotal);
+            };
+            
+            window.formatInputField = function(e) {
+                const value = parseRupiah(e.target.value);
+                e.target.value = value > 0 ? 'Rp ' + new Intl.NumberFormat('id-ID').format(value) : '';
+                calculateTotal();
+            };
+
+            function renumberRows() {
+                document.querySelectorAll('#offer-items tr').forEach((row, index) => {
+                    const numberCell = row.querySelector('.row-number');
+                    if (numberCell) numberCell.textContent = index + 1;
+                });
+            }
+
+            function addRow() {
+                const tbody = document.getElementById('offer-items');
+                const newRow = tbody.insertRow();
+                newRow.innerHTML = `
+                    <td data-label="No" class="cell-center"><span class="row-number"></span></td>
+                    <td data-label="Jenis Barang"><input type="text" class="table-input input-nama" placeholder="..."></td>
+                    <td data-label="Banyak"><input type="number" min="0" class="table-input input-qty cell-center" oninput="calculateTotal()" placeholder="..."></td>
+                    <td data-label="Harga Satuan"><input type="text" class="table-input input-price cell-right" oninput="formatInputField(event)" placeholder="..."></td>
+                    <td data-label="Jumlah" class="cell-right"><span class="total"></span></td>
+                `;
+                renumberRows();
+                calculateTotal();
+            }
+
+            document.getElementById('add-row').addEventListener('click', addRow);
+            document.getElementById('remove-row').addEventListener('click', function() {
+                const tbody = document.getElementById('offer-items');
+                if (tbody.rows.length > 0) {
+                    tbody.deleteRow(-1);
+                    calculateTotal();
+                }
+            });
+
+            for(let i=0; i<1; i++) { addRow(); }
+            calculateTotal();
+            
+            document.getElementById('download-pdf-button').addEventListener('click', function(e) {
+                e.preventDefault();
+                const element = document.getElementById('offer-to-print');
+                const clientName = document.getElementById('client-name').value.trim() || 'Customer';
+                const fileName = `Penawaran Harga - ${clientName}.pdf`;
+                const opt = {
+                    margin: [0, 0, 0, 0],
+                    filename: fileName,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                html2pdf().from(element).set(opt).save();
+            });
+        });         
+    </script>
+</body>
+</html>
