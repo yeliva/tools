@@ -735,24 +735,22 @@
                 const invoiceNumber = document.getElementById('invoice-number').value.replace(/\//g, '-');
                 const fileName = `Faktur - ${clientName} - ${invoiceNumber}.pdf`;
                 const opt = {
-    margin: [10, 10, 10, 10],
-    filename: fileName,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        scrollY: 0 
-    },
-    jsPDF: {
-        unit: 'mm',
-        format: 'a4',
-        orientation: 'landscape'
-    },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } 
-};
-
-
+                    margin: [1, 1, 1, 1],
+                    filename: fileName,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        logging: false,
+                        scrollY: 0 
+                    },
+                    jsPDF: {
+                        unit: 'mm',
+                        format: 'a4',
+                        orientation: 'landscape'
+                    },
+                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } 
+                };
                 loadingOverlay.style.display = 'flex';
                 
                 setTimeout(() => {
