@@ -262,7 +262,6 @@
             .info-input {
                 border-bottom: none;
             }
-            /* Aturan ini seharusnya sudah cukup, tapi metode JS lebih pasti */
             .table-controls, .action-buttons {
                 display: none;
             }
@@ -598,14 +597,12 @@
                 const element = document.getElementById('offer-to-print');
                 const loadingOverlay = document.getElementById('loading-overlay');
                 const dateInput = document.getElementById('offer-date');
-                // **PERUBAHAN BARU**: Ambil elemen tombol kontrol
                 const tableControls = document.querySelector('.table-controls');
                 const actionButtons = document.querySelector('.action-buttons');
                 
                 loadingOverlay.style.display = 'flex';
                 
                 setTimeout(() => {
-                    // **PERUBAHAN BARU**: Sembunyikan tombol kontrol
                     tableControls.style.display = 'none';
                     actionButtons.style.display = 'none';
 
@@ -651,7 +648,6 @@
                         element.classList.remove('force-desktop');
                         loadingOverlay.style.display = 'none';
                         
-                        // **PERUBAHAN BARU**: Tampilkan kembali tombol kontrol
                         tableControls.style.display = 'flex';
                         actionButtons.style.display = 'flex';
 
