@@ -97,6 +97,9 @@
         .subject-line {
             font-weight:500;
         }
+        .subject-label{
+            margin-right:3px;
+        }
         .recipient-label {
             margin-top:20px;
             font-weight:500;
@@ -161,12 +164,12 @@
             cursor: pointer;
         }
         .btn-add {
-            font-size: 10.5pt;
+            font-size: 12pt;
             background-color: #6366f1;
         }
         .btn-add:hover { background-color: #4f46e5; }
         .btn-remove {
-            font-size: 10.5pt;
+            font-size: 12pt;
             background-color: #ef4444;
         }
         .btn-remove:hover { background-color: #dc2626; }
@@ -212,7 +215,7 @@
         }
         .signature-area p {
             font-size: 12pt;
-            font-weight: 600;
+            font-weight: 500;
         }
         .signature-area .stamp {
             margin-top: 5px;
@@ -228,6 +231,7 @@
         .btn-full {
             width: 100%;
             padding: 15px 24px;
+            font-weight:700;
             
         }
         .btn-print { background-color: #22c55e; font-size:12pt; }
@@ -357,7 +361,7 @@
 
             .main-table td::before {
                 content: attr(data-label);
-                font-weight: bold;
+                font-weight: 500;
                 padding-right: 10px;
             }
             .main-table .table-input {
@@ -366,6 +370,9 @@
             }
             .cell-center {
                 text-align: right;
+            }
+            .total-wrapper {
+            width:100%;
             }
         }
         .offer-body.force-desktop {
