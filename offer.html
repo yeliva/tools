@@ -18,7 +18,7 @@
             align-items: flex-start;
             min-height: 100vh;
             margin: 0;
-            padding: 32px;
+            padding: 38px;
             box-sizing: border-box;
             font-size: 12pt;
         }
@@ -48,10 +48,6 @@
         }
         .company-contact p {
             margin: 2px 0;
-        }
-        .company-contact img {
-            vertical-align: middle;
-            margin-right: 5px;
         }
         .header-divider {
             border: 0;
@@ -221,6 +217,35 @@
             font-family: 'Roboto Mono', monospace;
         }
         
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 14pt;
+            color: #374151;
+        }
+        .spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #3b82f6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @page {
             size: A4 portrait;
             margin: 38px;
@@ -228,7 +253,7 @@
         @media print {
             body {
                 background-color: #fff;
-                padding: 0;
+                padding: 38px;
             }
             .offer-container {
                 max-width: 100%;
@@ -318,6 +343,63 @@
                 text-align: right;
             }
         }
+        
+        .force-desktop .offer-header {
+            flex-direction: row !important;
+            align-items: center !important;
+        }
+        .force-desktop .company-contact {
+            text-align: right;
+            font-size: 10pt;
+        }
+        
+        .force-desktop .addressing-section {
+            flex-direction: row !important;
+            align-items: flex-start !important;
+        }
+
+        .force-desktop .main-table thead {
+            display: table-header-group !important;
+        }
+
+        .force-desktop .main-table tr {
+            display: table-row !important;
+            border: none !important;
+            border-radius: 0 !important;
+            margin-bottom: 0 !important;
+            padding: 0 !important;
+        }
+
+        .force-desktop .main-table td {
+            display: table-cell !important;
+            justify-content: initial !important;
+            align-items: initial !important;
+            border: 1px solid #fff !important;
+            padding: 8px !important;
+            text-align: left;
+        }
+
+        .force-desktop .main-table td::before {
+            content: none !important;
+        }
+
+        .force-desktop .main-table .cell-center,
+        .force-desktop .main-table .input-qty {
+            text-align: center !important;
+        }
+
+        .force-desktop .main-table .cell-right,
+        .force-desktop .main-table .input-price {
+            text-align: right !important;
+        }
+
+        .force-desktop .main-table .table-input {
+            width: 100% !important;
+        }
+        .force-desktop .offer-body {
+            padding: 38px !important;
+        }
+
     </style>
 </head>
 <body>
@@ -405,6 +487,11 @@
         </div>
     </div>
 
+    <div id="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Membuat PDF...</p>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -426,7 +513,7 @@
                 inputElement.style.width = (ruler.offsetWidth + 2) + 'px';
             }
             
-            flatpickr("#offer-date", {
+            const flatpickrConfig = {
                 dateFormat: "d F Y",
                 defaultDate: "today",
                 allowInput: true,
@@ -436,7 +523,8 @@
                 onReady: function(selectedDates, dateStr, instance) {
                     adjustInputWidth(instance.input);
                 }
-            });
+            };
+            let flatpickrInstance = flatpickr("#offer-date", flatpickrConfig);
 
             function formatRupiah(angka) {
                 if(isNaN(angka) || angka === null || angka === 0) return '';
@@ -506,18 +594,74 @@
             
             document.getElementById('download-pdf-button').addEventListener('click', function(e) {
                 e.preventDefault();
+                
                 const element = document.getElementById('offer-to-print');
-                const clientName = document.getElementById('client-name').value.trim() || 'Customer';
-                const fileName = `Penawaran Harga - ${clientName}.pdf`;
-                const opt = {
-                    margin: [0, 0, 0, 0],
-                    filename: fileName,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                };
-                html2pdf().from(element).set(opt).save();
+                const loadingOverlay = document.getElementById('loading-overlay');
+                const dateInput = document.getElementById('offer-date');
+                const tableControls = document.querySelector('.table-controls');
+                const actionButtons = document.querySelector('.action-buttons');
+                
+                loadingOverlay.style.display = 'flex';
+                
+                setTimeout(() => {
+                    const originalWidth = offerContainer.style.width;
+                    const originalMaxWidth = offerContainer.style.maxWidth;
+                    offerContainer.style.width = '794px';
+                    offerContainer.style.maxWidth = '794px';
+                    tableControls.style.display = 'none';
+                    actionButtons.style.display = 'none';
+
+                    if (flatpickrInstance) {
+                        flatpickrInstance.destroy();
+                        dateInput.classList.remove('flatpickr-input');
+                        dateInput.style.backgroundColor = 'transparent';
+                    }
+
+                    element.classList.add('force-desktop');
+
+                    const clientName = document.getElementById('client-name').value.trim() || 'Customer';
+                    const fileName = `Penawaran Harga - ${clientName}.pdf`;
+                    const opt = {
+                        margin: [10, 10, 10, 10],
+                        filename: fileName,
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    };
+
+                    html2pdf().from(element).set(opt).save()
+                    .then(() => {
+                        Toastify({
+                            text: "✔ Surat Penawaran berhasil diunduh!",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "center",
+                            style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
+                        }).showToast();
+                    })
+                    .catch((error) => {
+                        console.error("Gagal membuat PDF:", error);
+                        Toastify({
+                            text: "Gagal mengunduh PDF. Silakan coba lagi.",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "center",
+                            style: { background: "#ef4444" }
+                        }).showToast();
+                    })
+                    .finally(() => {
+                        element.classList.remove('force-desktop');
+                        loadingOverlay.style.display = 'none';
+                        
+                        tableControls.style.display = 'flex';
+                        actionButtons.style.display = 'flex';
+
+                        dateInput.style.backgroundColor = ''; 
+                        flatpickrInstance = flatpickr("#offer-date", flatpickrConfig);
+                    });
+                }, 100);
             });
+
         });         
     </script>
 </body>
