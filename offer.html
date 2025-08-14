@@ -55,10 +55,13 @@
             margin-bottom: 20px;
         }
         .addressing-section {
+            margin-bottom: 8px;
+        }
+        .date-section {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
+            justify-content: flex-start;
+            font-weight:500;
+            margin-bottom:0;
         }
 
         .recipient-info {
@@ -290,14 +293,15 @@
             .company-contact {
                 text-align: left;
             }
-
+            
             .addressing-section {
-                flex-direction: column;
-                gap: 10px;
+                margin-bottom: 10px; 
             }
+
             .recipient-info, .date-section {
                 width: 100%;
             }
+
             .info-line {
                 justify-content: flex-start;
             }
@@ -417,7 +421,12 @@
                 </div>
             </header>
             <hr class="header-divider">
-
+            <div class="date-section">
+                <div class="info-line">
+                    <span class="info-label">Jakarta,</span>
+                    <input type="text" id="offer-date" class="date-input">
+                </div>
+            </div>
             <div class="addressing-section">
                 <div class="recipient-info">
                     <div class="subject-line">
@@ -427,13 +436,8 @@
                     <div class="recipient-label">Kepada Yth,</div>
                     <input type="text" id="client-name" class="info-input" placeholder="...">
                 </div>
-                <div class="date-section">
-                    <div class="info-line">
-                        <span class="info-label">Jakarta,</span>
-                        <input type="text" id="offer-date" class="date-input">
-                    </div>
-                </div>
             </div>
+            
             
             <div class="opening-statement">
                 <p>Dengan hormat,</p>
@@ -492,6 +496,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script> <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
@@ -513,6 +520,7 @@
             }
             
             const flatpickrConfig = {
+                locale: "id",
                 dateFormat: "d F Y",
                 defaultDate: "today",
                 allowInput: true,
