@@ -599,25 +599,15 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             function generateInvoiceNumber() {
-        // 1. Dapatkan tanggal dan waktu saat ini
         const now = new Date();
-
-        // 2. Ambil setiap bagian yang diperlukan
         const year = now.getFullYear();
-        // getMonth() dimulai dari 0 (Januari=0), jadi perlu ditambah 1
         const month = String(now.getMonth() + 1).padStart(2, '0'); 
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
-
-        // 3. Gabungkan menjadi format yang diinginkan
-        // Format: PRP/YYYY/MM/HOUR+MINUTE
         const invoiceNumber = `PRP/${year}/${month}/${hours}${minutes}`;
 
-        // 4. Masukkan nomor ke dalam elemen HTML
         document.getElementById('invoice-number').textContent = invoiceNumber;
     }
-
-    // Panggil fungsi agar nomor langsung muncul saat halaman dimuat
     generateInvoiceNumber();
             const ruler = document.createElement('span');
             ruler.style.visibility = 'hidden';
@@ -737,7 +727,7 @@
                     element.classList.add('force-desktop');
 
                     const clientName = document.getElementById('client-name').value.trim() || 'Customer';
-                    const fileName = `Penawaran Harga - ${clientName}.pdf`;
+                    const fileName = `Penawaran - ${clientName}.pdf`;
                     const opt = {
                         margin: [1, 1, 1, 1],
                         filename: fileName,
