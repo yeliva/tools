@@ -44,7 +44,7 @@
         }
         .contact-details p {
             font-size: 10pt;
-            margin-top: -9px;
+            margin-top: -13px;
         }
         .signature-area p {
             font-size: 12pt;
@@ -104,7 +104,7 @@
             border: none;
             border-bottom: 1px dotted #374151;
             width: 100%;
-            padding: 2px 0;
+            padding: 0;
             font-size:12pt;
             font-weight: 500;
             font-family: 'Roboto Mono', monospace
@@ -121,15 +121,19 @@
             margin-top: 55px;
         }
         .main-table th, .main-table td {
-            border: 1px solid #d1d5db;
+            border: 1px solid #ffff;
             padding: 8px;
             height: 23px;
             box-sizing: content-box;
         }
         .main-table th {
-            background-color: #f9fafb;
+            background-color: #5c6bc0;
             text-align: center;
-            font-weight: 600;
+            color:white;
+            font-weight:500;
+        }
+        .main-table td {
+            background-color:#f9fafb;
         }
         .main-table th.col-no { width: 8.33%; }
         .main-table th.col-nama { width: 41.66%; }
@@ -280,7 +284,7 @@
             .sembunyikan-saat-cetak {
                 display: none !important;
             }
-            .main-table th, .summary-box {
+            .main-table th, .summary-box, .main-table td {
                 -webkit-print-color-adjust: exact;
                 color-adjust: exact;
             }
@@ -349,6 +353,7 @@
                 border-bottom: 1px solid #eee;
                 padding: 10px 5px;
                 text-align: right;
+                background-color:transparent;
             }
             .main-table td:last-child {
                 border-bottom: none;
@@ -394,9 +399,10 @@
             display: table-cell !important;
             justify-content: initial !important;
             align-items: initial !important;
-            border: 1px solid #d1d5db !important;
+            border: 1px solid #fff !important;
             padding: 8px !important;
             text-align: left;
+            background-color: #f9fafb;
         }
         .force-desktop .main-table td::before {
             content: none !important;
