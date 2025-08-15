@@ -651,12 +651,11 @@
             for(let i=0; i<1; i++) { addRow(); }
             calculateTotal();
             
-            async function simpanKeSheet() {
+            async function simpanKeSheet(showNotification = true) { 
                 const items = [];
                 let hasValidItem = false; 
 
                 document.querySelectorAll('#invoice-items tr').forEach(row => {
-                
                     const namaPesanan = row.querySelector('.input-nama').value.trim();
                     const banyak = row.querySelector('.input-qty').value.trim();
                     const harga = row.querySelector('.input-price').value.trim();
@@ -673,14 +672,17 @@
                 });
                 
                 if (!hasValidItem) {
-                    Toastify({
-                        text: "Harap isi Nama, Banyak, & Harga pada minimal satu baris.",
-                        duration: 3000,
-                        gravity: "top",
-                        position: "center",
-                        style: { background: "linear-gradient(to right, #ff5f6d, #ffc371)" }
-                    }).showToast();
-                    return;
+                    
+                    if (showNotification) {
+                        Toastify({
+                            text: "Harap isi Nama, Banyak, & Harga pada minimal satu baris.",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "center",
+                            style: { background: "linear-gradient(to right, #ff5f6d, #ffc371)" }
+                        }).showToast();
+                    }
+                    return false;
                 }
                 
                 const invoiceData = {
@@ -701,23 +703,31 @@
                         mode: 'no-cors'
                     });
                     
-                    Toastify({
-                        text: "✔ Data berhasil disimpan ke Google Sheets!",
-                        duration: 3000,
-                        gravity: "top",
-                        position: "center",
-                        style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
-                    }).showToast();
+                    
+                    if (showNotification) {
+                        Toastify({
+                            text: "✔ Data berhasil disimpan ke Google Sheets!",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "center",
+                            style: { background: "linear-gradient(to right, #00b09b, #96c93d)" }
+                        }).showToast();
+                    }
+                    return true;
                 } catch (error) {
                     console.error('Terjadi kesalahan jaringan, data tidak dapat dikirim.', error);
                     
-                    Toastify({
-                        text: "Gagal menyimpan. Periksa koneksi internet Anda.",
-                        duration: 3000,
-                        gravity: "top",
-                        position: "center",
-                        style: { background: "#ef4444" }
-                    }).showToast();
+                    
+                    if (showNotification) {
+                        Toastify({
+                            text: "Gagal menyimpan. Periksa koneksi internet Anda.",
+                            duration: 3000,
+                            gravity: "top",
+                            position: "center",
+                            style: { background: "#ef4444" }
+                        }).showToast();
+                    }
+                    return false;
                 }
             }
             
@@ -729,9 +739,13 @@
                 });
             }
 
-            document.getElementById('download-pdf-button').addEventListener('click', function(event) {
+            document.getElementById('download-pdf-button').addEventListener('click', function(event) { 
                 event.preventDefault();
 
+                
+                simpanKeSheet(false);
+
+                
                 const originalElement = document.getElementById('invoice-to-print');
                 const loadingOverlay = document.getElementById('loading-overlay');
                 const tableControls = document.querySelector('.table-controls');
