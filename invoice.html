@@ -18,7 +18,7 @@
             background-color: #e5e7eb;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
             margin: 0;
             padding: 32px;
@@ -39,7 +39,7 @@
             flex-grow: 1;
         }
 
-        .invoice-container, .invoice-container td, .invoice-container th, .invoice-container input, .invoice-container label, .invoice-container button {
+        .invoice-container, .invoice-container td, .invoice-container th, .invoice-container input, .invoice-container label, .invoice-container button, .invoice-container a {
             font-size: 12pt;
         }
         .contact-details p {
@@ -164,6 +164,10 @@
             padding: 6px 12px;
             color: white;
             cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         .btn-add {
             font-size: 10.5pt;
@@ -175,15 +179,32 @@
             background-color: #ef4444;
         }
         .btn-remove:hover { background-color: #dc2626; }
+
         .action-buttons {
-            margin-top: 32px;
+            position: sticky;
+            bottom: 0;
             display: flex;
-            gap: 16px;
+            gap: 8px;
+            background-color: #ffffff;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            z-index: 10;
         }
-        .btn-full {
-            width: 100%;
-            padding: 15px 24px;
+        .btn-back { background-color: #6c757d; padding:6px; }
+        .btn-back:hover { background-color: #5a6268; }
+        .btn-back-small {
+            flex-grow: 0;
+            flex-basis: 7%;
         }
+        .btn-save-large, .btn-download-large {
+            flex-grow: 1;
+        }
+        .btn-back-small svg {
+            width: 30px;
+            height: 30px;
+            vertical-align: middle;
+        }
+        
         .btn-save { background-color: #3b82f6; }
         .btn-save:hover { background-color: #2563eb; }
         .btn-print { background-color: #22c55e; }
@@ -204,6 +225,7 @@
         }
         .thank-you-note {
             margin-top: 40px;
+            padding-bottom: 20px;
         }
         .thank-you-note p {
             font-size: 10pt;
@@ -281,31 +303,25 @@
             .table-controls, .action-buttons {
                 display: none;
             }
-            .sembunyikan-saat-cetak {
-                display: none !important;
-            }
             .main-table th, .summary-box, .main-table td {
                 -webkit-print-color-adjust: exact;
                 color-adjust: exact;
             }
             .invoice-header {
-    page-break-inside: avoid;
-    page-break-after: avoid;
-    }
-
-    .main-table {
-        page-break-inside: auto;
-    }
-
-    .main-table tr {
-        page-break-inside: avoid;
-        page-break-after: auto;
-    }
-
-    .invoice-footer {
-        page-break-before: always;
-        page-break-inside: avoid;
-    }
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+            .main-table {
+                page-break-inside: auto;
+            }
+            .main-table tr {
+                page-break-inside: avoid;
+                page-break-after: auto;
+            }
+            .invoice-footer {
+                page-break-before: always;
+                page-break-inside: avoid;
+            }
         }
 
         @media (max-width: 640px) {
@@ -319,6 +335,9 @@
             }
             .invoice-body {
                 padding: 16px;
+            }
+            .action-buttons {
+                padding: 10px 16px;
             }
             .invoice-header {
                 flex-direction: column;
@@ -343,7 +362,6 @@
                 border-radius: 8px;
                 margin-bottom: 16px;
                 padding: 10px;
-                
             }
             .main-table td {
                 display: flex;
@@ -357,7 +375,6 @@
             }
             .main-table td:last-child {
                 border-bottom: none;
-                
             }
             .main-table td::before {
                 content: attr(data-label);
@@ -379,61 +396,6 @@
             }
         }
         
-        .force-desktop .invoice-header {
-            flex-direction: row !important;
-        }
-        .force-desktop .client-info {
-            width: auto !important;
-        }
-        .force-desktop .main-table thead {
-            display: table-header-group !important;
-        }
-        .force-desktop .main-table tr {
-            display: table-row !important;
-            border: none !important;
-            border-radius: 0 !important;
-            margin-bottom: 0 !important;
-            padding: 0 !important;
-        }
-        .force-desktop .main-table td {
-            display: table-cell !important;
-            justify-content: initial !important;
-            align-items: initial !important;
-            border: 1px solid #fff !important;
-            padding: 8px !important;
-            text-align: left;
-            background-color: #f9fafb;
-        }
-        .force-desktop .main-table td::before {
-            content: none !important;
-        }
-        .force-desktop .main-table .cell-center,
-        .force-desktop .main-table .input-qty {
-            text-align: center !important;
-        }
-        .force-desktop .main-table .cell-right,
-        .force-desktop .main-table .input-price {
-            text-align: right !important;
-        }
-        .force-desktop .main-table .table-input {
-            width: 100% !important;
-            text-align: left;
-        }
-        .force-desktop .invoice-footer {
-            flex-direction: row !important;
-            align-items: flex-end !important;
-        }
-        .force-desktop .summary-wrapper {
-            width: 33.33% !important;
-        }
-        .force-desktop .invoice-title {
-            font-size:27pt;
-        }
-        
-        .invoice-body.force-desktop {
-            padding: 38px !important;
-        }
-
         #loading-overlay {
             position: fixed;
             top: 0;
@@ -509,7 +471,7 @@
                         </tr>
                     </thead>
                     <tbody id="invoice-items">
-                        </tbody>
+                    </tbody>
                 </table>
                 <div class="table-controls">
                     <button id="add-row" class="btn btn-add">+ Tambah Baris</button>
@@ -547,11 +509,17 @@
             <div class="thank-you-note">
                 <p>Terima kasih telah mempercayakan kebutuhan cetak Anda kepada Roviana Printing!</p>
             </div>
-            
-            <div class="action-buttons">
-                <button id="save-button" class="btn btn-full btn-save">Simpan ke Sheet</button>
-                <button id="download-pdf-button" class="btn btn-full btn-print">Download PDF</button>
-            </div>
+        </div>
+        <div class="action-buttons">
+            <a href="index.html" class="btn btn-back btn-back-small" title="Kembali ke Beranda">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="SVGRepo_iconCarrier">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.5192 7.82274C2 8.77128 2 9.91549 2 12.2039V13.725C2 17.6258 2 19.5763 3.17157 20.7881C4.34315 22 6.22876 22 10 22H14C17.7712 22 19.6569 22 20.8284 20.7881C22 19.5763 22 17.6258 22 13.725V12.2039C22 9.91549 22 8.77128 21.4808 7.82274C20.9616 6.87421 20.0131 6.28551 18.116 5.10812L16.116 3.86687C14.1106 2.62229 13.1079 2 12 2C10.8921 2 9.88939 2.62229 7.88403 3.86687L5.88403 5.10813C3.98695 6.28551 3.0384 6.87421 2.5192 7.82274ZM9 17.25C8.58579 17.25 8.25 17.5858 8.25 18C8.25 18.4142 8.58579 18.75 9 18.75H15C15.4142 18.75 15.75 18.4142 15.75 18C15.75 17.5858 15.4142 17.25 15 17.25H9Z" fill="#FFFFFF"></path> 
+                    </g>
+                </svg>
+            </a>
+            <button id="save-button" class="btn btn-save btn-save-large">Simpan ke Sheet</button>
+            <button id="download-pdf-button" class="btn btn-print btn-download-large">Download PDF</button>
         </div>
     </div>
 
@@ -672,7 +640,6 @@
                 });
                 
                 if (!hasValidItem) {
-                    
                     if (showNotification) {
                         Toastify({
                             text: "Harap isi Nama, Banyak, & Harga pada minimal satu baris.",
@@ -703,7 +670,6 @@
                         mode: 'no-cors'
                     });
                     
-                    
                     if (showNotification) {
                         Toastify({
                             text: "✔ Data berhasil disimpan ke Google Sheets!",
@@ -716,7 +682,6 @@
                     return true;
                 } catch (error) {
                     console.error('Terjadi kesalahan jaringan, data tidak dapat dikirim.', error);
-                    
                     
                     if (showNotification) {
                         Toastify({
@@ -742,14 +707,11 @@
             document.getElementById('download-pdf-button').addEventListener('click', function(event) { 
                 event.preventDefault();
 
-                
                 simpanKeSheet(false);
-
                 
                 const originalElement = document.getElementById('invoice-to-print');
                 const loadingOverlay = document.getElementById('loading-overlay');
                 const tableControls = document.querySelector('.table-controls');
-                const actionButtons = document.querySelector('.action-buttons');
                 
                 const clientName = document.getElementById('client-name').value.trim() || 'Customer';
                 const invoiceNumber = document.getElementById('invoice-number').value.replace(/\//g, '-');
@@ -777,14 +739,12 @@
                     const originalDpDisplay = document.getElementById('dp-row').style.display;
                     const originalSisaDisplay = document.getElementById('sisa-row').style.display;
                     const originalTableControlsDisplay = tableControls.style.display;
-                    const originalActionButtonsDisplay = actionButtons.style.display;
 
                     if (flatpickrInstance) {
                         flatpickrInstance.destroy();
                     }
 
                     tableControls.style.display = 'none';
-                    actionButtons.style.display = 'none';
                     originalElement.classList.add('force-desktop');
 
                     const uangMukaValue = parseRupiah(document.getElementById('uang-muka').value) || 0;
@@ -814,13 +774,11 @@
                         inputsToClean.forEach(input => input.style.borderBottom = '');
                         
                         tableControls.style.display = originalTableControlsDisplay;
-                        actionButtons.style.display = originalActionButtonsDisplay;
 
                         flatpickrInstance = flatpickr("#invoice-date", flatpickrConfig);
 
                         loadingOverlay.style.display = 'none';
                     });
-
                 }, 100); 
             });
         });         
