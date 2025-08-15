@@ -734,12 +734,7 @@
                 loadingOverlay.style.display = 'flex';
                 
                 setTimeout(() => {
-                    tableControls.style.display = 'none';
-                    
-                    
-                    if(actionButtons) {
-                        actionButtons.style.display = 'none';
-                    }
+                    tableControls.style.display = 'none'
 
                     if (flatpickrInstance) {
                         flatpickrInstance.destroy();
@@ -784,11 +779,6 @@
                         loadingOverlay.style.display = 'none';
                         
                         tableControls.style.display = 'flex';
-                        
-                        
-                        if(actionButtons) {
-                           actionButtons.style.display = 'flex';
-                        }
 
                         dateInput.style.backgroundColor = ''; 
                         flatpickrInstance = flatpickr("#offer-date", flatpickrConfig);
