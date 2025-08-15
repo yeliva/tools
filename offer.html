@@ -35,6 +35,7 @@
         .offer-body {
             padding: 38px;
             flex-grow: 1;
+            position: relative;
         }
 
         .offer-header {
@@ -59,12 +60,16 @@
             margin-bottom: 8px;
         }
         .date-section {
-            display: flex;
-            justify-content: flex-start;
-            font-weight:500;
-            margin-bottom:0;
+            position: absolute;
+            top: 150px;
+            right: 38px;
+            text-align:right;
         }
-
+        .invoice-number-section { 
+            font-size: 12pt;
+            margin-bottom: 2px;
+            
+        }
         .recipient-info {
             width: 60%;
             margin-bottom: 0;
@@ -81,11 +86,11 @@
             font-family: 'Roboto', sans-serif;
             padding:0;
             margin-top:2px;
+            font-weight:500;
         }
         .date-input{
             border: none;
             font-size: 12pt;
-            font-weight:500;
             font-family: 'Roboto', sans-serif;
             padding:0;
             margin-left:4px;
@@ -93,9 +98,6 @@
         .info-input:focus {
             outline: none;
             border-bottom-style: none;
-        }
-        .subject-line {
-            font-weight:500;
         }
         .subject-label{
             margin-right:3px;
@@ -330,8 +332,14 @@
                 margin-bottom: 10px; 
             }
 
-            .recipient-info, .date-section {
+            .recipient-info, {
                 width: 100%;
+            }
+            
+            .date-section {
+                position: static;
+                margin-bottom: 2px;
+                text-align:left;
             }
 
             .info-line {
@@ -385,6 +393,7 @@
         }
         .offer-body.force-desktop {
             padding: 38px !important;
+            
         }
 
         .force-desktop .offer-header {
@@ -399,6 +408,14 @@
         .force-desktop .addressing-section {
             flex-direction: row !important;
             align-items: flex-start !important;
+        }
+        
+        .force-desktop .date-section {
+            position: absolute !important;
+            top: 150px !important;
+            margin-right: 0px !important;
+            text-align: right !important; 
+            
         }
 
         .force-desktop .main-table thead {
@@ -467,11 +484,13 @@
                     <input type="text" id="offer-date" class="date-input">
                 </div>
             </div>
+            <div class="invoice-number-section">No:
+            <span id="invoice-number"></span>
+            </div>
             <div class="addressing-section">
                 <div class="recipient-info">
                     <div class="subject-line">
-                        <span class="subject-label">Perihal:</span>
-                        <input type="text" id="offer-subject" class="info-input" placeholder="...">
+                        <span class="subject-label">Hal: Surat Penawaran Harga</span>
                     </div>
                     <div class="recipient-label">Kepada Yth,</div>
                     <input type="text" id="client-name" class="info-input" placeholder="...">
@@ -548,7 +567,27 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            
+            function generateInvoiceNumber() {
+        // 1. Dapatkan tanggal dan waktu saat ini
+        const now = new Date();
+
+        // 2. Ambil setiap bagian yang diperlukan
+        const year = now.getFullYear();
+        // getMonth() dimulai dari 0 (Januari=0), jadi perlu ditambah 1
+        const month = String(now.getMonth() + 1).padStart(2, '0'); 
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+
+        // 3. Gabungkan menjadi format yang diinginkan
+        // Format: PRP/YYYY/MM/HOUR+MINUTE
+        const invoiceNumber = `PRP/${year}/${month}/${hours}${minutes}`;
+
+        // 4. Masukkan nomor ke dalam elemen HTML
+        document.getElementById('invoice-number').textContent = invoiceNumber;
+    }
+
+    // Panggil fungsi agar nomor langsung muncul saat halaman dimuat
+    generateInvoiceNumber();
             const ruler = document.createElement('span');
             ruler.style.visibility = 'hidden';
             ruler.style.position = 'absolute';
