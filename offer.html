@@ -82,6 +82,7 @@
         }
         .info-input {
             border: none;
+            border-bottom: 1px dotted #374151;
             font-size: 12pt;
             font-family: 'Roboto', sans-serif;
             padding:0;
@@ -115,7 +116,6 @@
         }
         .info-input:focus, .info-subject:focus{
             outline: none;
-            border-bottom-style: none;
         }
         .subject-label{
             margin-right:3px;
@@ -316,7 +316,7 @@
                 box-shadow: none;
             }
             .info-input {
-                border-bottom: none;
+                border-bottom:none;
             }
             .table-controls, .action-buttons {
                 display: none;
@@ -483,6 +483,9 @@
         .force-desktop .total-wrapper {
             width: 40% !important;
         }
+        .force-desktop .info-input {
+            border-bottom:none;
+        }
 
     </style>
 </head>
@@ -521,7 +524,7 @@
             <div class="addressing-section">
                 <div class="recipient-info">
                     <div class="recipient-label">Kepada Yth,</div>
-                    <input type="text" id="client-name" class="info-input" placeholder="...">
+                    <input type="text" id="client-name" class="info-input" >
                 </div>
             </div>
             
