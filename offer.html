@@ -88,6 +88,24 @@
             margin-top:2px;
             font-weight:500;
         }
+        .info-subject {
+            border: none;
+            font-size: 12pt;
+            font-family: 'Roboto', sans-serif;
+            padding:0;
+            margin-top:2px;
+        }
+        .meta-info-grid {
+            display: grid;
+            grid-template-columns: auto auto 1fr; 
+            gap: 4px 0px;
+            align-items: center;             
+            margin-bottom: 20px;
+        }
+        .meta-info-grid span:nth-child(3n-1) {
+            margin: 0 8px;
+            
+        }
         .date-input{
             border: none;
             font-size: 12pt;
@@ -95,7 +113,7 @@
             padding:0;
             margin-left:4px;
         }
-        .info-input:focus {
+        .info-input:focus, .info-subject:focus{
             outline: none;
             border-bottom-style: none;
         }
@@ -302,7 +320,7 @@
             .table-controls, .action-buttons {
                 display: none;
             }
-            .main-table th {
+            .main-table th, .main-table td {
                 -webkit-print-color-adjust: exact;
                 color-adjust: exact;
             }
@@ -437,6 +455,7 @@
             border: 1px solid #fff !important;
             padding: 8px !important;
             text-align: left;
+            background-color: #f9fafb;
         }
 
         .force-desktop .main-table td::before {
@@ -488,14 +507,18 @@
                     <input type="text" id="offer-date" class="date-input">
                 </div>
             </div>
-            <div class="invoice-number-section">No:
-            <span id="invoice-number"></span>
+            <div class="meta-info-grid">
+                <span>No</span>
+                <span>:</span>
+                <span id="invoice-number"></span>
+
+                <span>Hal</span>
+                <span>:</span>
+                <input type="text" id="offer-subject" class="info-subject" value="Surat Penawaran Harga">
             </div>
+
             <div class="addressing-section">
                 <div class="recipient-info">
-                    <div class="subject-line">
-                        <span class="subject-label">Hal: Surat Penawaran Harga</span>
-                    </div>
                     <div class="recipient-label">Kepada Yth,</div>
                     <input type="text" id="client-name" class="info-input" placeholder="...">
                 </div>
