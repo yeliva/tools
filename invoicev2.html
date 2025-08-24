@@ -4,525 +4,118 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faktur Pesanan - Roviana Printing</title>
-    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#fff">
     <link rel="icon" type="image/png" href="favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #e5e7eb;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            margin: 0;
-            padding: 32px;
-            box-sizing: border-box;
-            font-size: 12pt;
-        }
-        
-        .invoice-container {
-            width: 100%;
-            max-width: 1123px;
-            background: #fff;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            display: flex;
-            flex-direction: column;
-        }
-        .invoice-body {
-            padding: 38px;
-            flex-grow: 1;
-            position: relative; 
-        }
-
-        .invoice-container, .invoice-container td, .invoice-container th, .invoice-container input, .invoice-container label, .invoice-container button, .invoice-container a {
-            font-size: 12pt;
-        }
-        .contact-details p {
-            font-size: 10pt;
-            margin-top: -13px;
-        }
-        .signature-area p {
-            font-size: 12pt;
-            font-weight: 600;
-        }
-        
-        .invoice-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 32px;
-        }
-        .company-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        .contact-details {
-            margin-top: 30px;
-            color: #4b5563;
-        }
-        .invoice-title  {
-            font-size: 27pt;
-            font-weight: 600;
-            color: #374151;
-            margin-top:0;
-        }
-
-        .client-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px; 
-        }
-
-        .client-info h1 { margin-bottom: 8px; } 
-
-        .dotted-input-container {
-            display: flex;
-            align-items: center;
-            margin-top:-4px;
-        }
-        
-        .dotted-input-container label {
-            width: 100px;
-            flex-shrink: 0;
-            margin-right: 10px;
-            display: flex;
-            white-space: nowrap;
-            justify-content: space-between;
-        }
-        .dotted-input-container label::after {
-            content: ':'; 
-            margin-left:20px;
-            
-        }
-        .dotted-input-container input {
-            border: none;
-            border-bottom: 1px dotted #374151;
-            width: 100%;
-            padding: 0;
-            font-size:12pt;
-            font-weight: 500;
-            font-family: 'Roboto Mono', monospace
-        }
-        .dotted-input-container input:focus {
-            outline: none;
-            border-bottom-style: solid;
-            border-bottom-color: #3b82f6;
-        }
-
-        .main-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 55px;
-        }
-        .main-table th, .main-table td {
-            border: 1px solid #ffff;
-            padding: 8px;
-            height: 23px;
-            box-sizing: content-box;
-        }
-        .main-table th {
-            background-color: #5c6bc0;
-            text-align: center;
-            color:white;
-            font-weight:500;
-        }
-        .main-table td {
-            background-color:#f9fafb;
-        }
-        .main-table th.col-no { width: 8.33%; }
-        .main-table th.col-nama { width: 41.66%; }
-        .main-table th.col-lain { width: 16.67%; }
-        .main-table .table-input {
-            width: 100%;
-            border: none;
-            padding: 0 4px;
-            font-size:12pt;
-            background-color: transparent;
-        }
-        .main-table .table-input:focus {
-            outline: none;
-            background-color: #eff6ff;
-        }
-        .cell-center { text-align: center; }
-        .cell-right { text-align: right; }
-
-        .table-controls {
-            margin-top: 16px;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        .btn {
-            font-weight: 700;
-            border: none;
-            border-radius: 8px;
-            padding: 6px 12px;
-            color: white;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .btn-add {
-            font-size: 10.5pt;
-            background-color: #6366f1;
-        }
-        .btn-add:hover { background-color: #4f46e5; }
-        .btn-remove {
-            font-size: 10.5pt;
-            background-color: #ef4444;
-        }
-        .btn-remove:hover { background-color: #dc2626; }
-        
-        .action-buttons {
-            position: sticky;
-            bottom: 0;
-            display: flex;
-            gap: 8px;
-            background-color: #ffffff;
-            padding: 10px;
-            border-top: 1px solid #ddd;
-            z-index: 10;
-        }
-        .btn-back { background-color: #6c757d; padding:6px; }
-        .btn-back:hover { background-color: #5a6268; }
-        .btn-back-small {
-            flex-grow: 0;
-            flex-basis: 7%;
-        }
-        
-        .btn-save-large, .btn-download-large {
-            flex-grow: 1;
-        }
-        .btn-back-small svg {
-            width: 30px;
-            height: 30px;
-            vertical-align: middle;
-        }
-        
-        .btn-save { background-color: #3b82f6; }
-        .btn-save:hover { background-color: #2563eb; }
-        .btn-print { background-color: #22c55e; }
-        .btn-print:hover { background-color: #16a34a; }
-        
-        .invoice-footer {
-            margin-top: 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-        .signature-area .stamp {
-            margin-top: -5px;
-            margin-left: 5px;
-            height: 80px;
-            width: 80px;
-            transform: rotate(-10deg);
-        }
-        .thank-you-note p {
-            font-size: 10pt;
-            font-style: italic; 
-            color: #4b5563;
-        }
-        .summary-wrapper {
-            width: 33.33%;
-        }
-        .summary-box {
-            background-color: #f9fafb;
-            padding: 8px;
-            border-radius: 8px;
-        }
-        .summary-table {
-            width: 100%;
-        }
-        .summary-table td {
-            padding: 6px;
-        }
-        .summary-table .label {
-            text-align: left;
-            font-weight: 700;
-            color: #1f2937;
-            white-space: nowrap;
-        }
-        .summary-table .value {
-            text-align: right;
-            font-weight: 500;
-            font-size:12pt;
-        }
-        .summary-table .value-bold {
-            font-weight: 700;
-        }
-        #uang-muka {
-            border: none;
-            background-color: transparent;
-            padding: 0;
-            width: 100%;
-            text-align: right;
-            font-weight: 500;
-            font-size:12pt;
-        }
-        #uang-muka:focus {
-            outline: none;
-        }
-        .main-table .table-input,
-        .summary-table .value,
-        .main-table .total,
-        .row-number,
-        #uang-muka,
-        #invoice-number {
-            font-family: 'Roboto Mono', monospace;
-        }
-        
-        @page {
-            size: A4 landscape;
-            margin: 38px;
-        }
-        @media print {
-            body {
-                background-color: #fff;
-                padding: 0;
-                display: block;
-                min-height: unset;
-                align-items: unset;
-            }
-            .invoice-container {
-                max-width: 100%;
-                box-shadow: none;
-            }
-            .dotted-input-container input {
-                border-bottom: none;
-            }
-            .table-controls, .action-buttons {
-                display: none;
-            }
-            .main-table th, .summary-box, .main-table td {
-                -webkit-print-color-adjust: exact;
-                color-adjust: exact;
-            }
-            .invoice-header {
-                page-break-inside: avoid;
-                page-break-after: avoid;
-            }
-            .main-table {
-                page-break-inside: auto;
-            }
-            .main-table tr {
-                page-break-inside: avoid;
-                page-break-after: auto;
-            }
-            .invoice-footer {
-                page-break-before: always;
-                page-break-inside: avoid;
-            }
-        }
-
-        @media (max-width: 640px) {
-            body {
-                padding: 0;
-                align-items: flex-start;
-            }
-            .invoice-container {
-                min-height: 100vh;
-                box-shadow: none;
-            }
-            .invoice-body {
-                padding: 16px;
-            }
-            .action-buttons {
-                padding: 10px 16px;
-            }
-            .invoice-header {
-                flex-direction: column;
-                gap: 20px;
-            }
-            .client-info {
-                width: 100%;
-            }
-            .invoice-title {
-                font-size:22pt;
-                text-align:left;
-            }
-            .dotted-input-container label {
-                width: 100px;
-            }
-            .main-table thead {
-                display: none;
-            }
-            .main-table tr {
-                display: block;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                margin-bottom: 16px;
-                padding: 10px;
-            }
-            .main-table td {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                border: none;
-                border-bottom: 1px solid #eee;
-                padding: 10px 5px;
-                text-align: right;
-                background-color:transparent;
-            }
-            .main-table td:last-child {
-                border-bottom: none;
-            }
-            .main-table td::before {
-                content: attr(data-label);
-                font-weight: bold;
-                text-align: left;
-                padding-right: 10px;
-            }
-            .main-table .table-input {
-                width: 50%;
-                text-align: left;
-            }
-            .invoice-footer {
-                flex-direction: column-reverse;
-                align-items: flex-start;
-                gap: 32px;
-            }
-            .summary-wrapper {
-                width: 100%;
-            }
-        }
-        .force-desktop .invoice-header {
-            flex-direction: row !important;
-        }
-        .force-desktop .client-info {
-            width: auto !important;
-        }
-        .force-desktop .main-table thead {
-            display: table-header-group !important;
-        }
-        .force-desktop .main-table tr {
-            display: table-row !important;
-            border: none !important;
-            border-radius: 0 !important;
-            margin-bottom: 0 !important;
-            padding: 0 !important;
-        }
-        .force-desktop .main-table td {
-            display: table-cell !important;
-            justify-content: initial !important;
-            align-items: initial !important;
-            border: 1px solid #fff !important;
-            padding: 8px !important;
-            text-align: left;
-            background-color: #f9fafb;
-        }
-        .force-desktop .main-table td::before {
-            content: none !important;
-        }
-        .force-desktop .main-table .cell-center,
-        .force-desktop .main-table .input-qty {
-            text-align: center !important;
-        }
-        .force-desktop .main-table .cell-right,
-        .force-desktop .main-table .input-price {
-            text-align: right !important;
-        }
-        .force-desktop .main-table .table-input {
-            width: 100% !important;
-            text-align: left;
-        }
-        .force-desktop .invoice-footer {
-            flex-direction: row !important;
-            align-items: flex-end !important;
-        }
-        .force-desktop .summary-wrapper {
-            width: 33.33% !important;
-        }
-        .force-desktop .invoice-title {
-            font-size:27pt;
-        }
-        .invoice-body.force-desktop {
-            padding: 38px !important;
-        }
-
-        #loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: #fff;
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 14pt;
-            color: #374151;
-        }
-        .spinner {
-            border: 6px solid #f3f3f3;
-            border-top: 6px solid #3b82f6;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        #watermark-lunas {
-            display: none; 
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-20deg);
-            font-size: 80pt;
-            font-weight: bold;
-            color: rgba(255, 0, 0, 0.15);
-            z-index: 1000;
-            pointer-events: none;
-            text-align: center;
-            border: 5px solid rgba(255, 0, 0, 0.15);
-            padding: 0 20px;
-            border-radius: 10px;
-        }
-
-        .invoice-body.watermarked #watermark-lunas {
-            display: block;
-        }
-        
-        .toggle-container {
-            background-color: #ef4444; 
-            padding: 6px 12px;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            cursor: pointer;
-            
-        }
-
-        .toggle-container input {
-            margin-right: 8px;
-            transform: scale(1.2);
-            cursor: pointer;
-        }
-
-        .toggle-container label {
-            font-weight: 700;
-            cursor: pointer;
-            margin-bottom: 0;
-            color:#fff;
-        }
-        #toggle-watermark {
-            accent-color: #fff;
-        }
+        body{font-family:'Roboto',sans-serif;background-color:#e5e7eb;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;margin:0;padding:32px;box-sizing:border-box;font-size:12pt}
+        .invoice-container{width:100%;max-width:1123px;background:#fff;box-shadow:0 4px 6px -1px #0000001a,0 2px 4px -2px #0000001a;display:flex;flex-direction:column}
+        .invoice-body{padding:38px;flex-grow:1;position:relative}
+        .invoice-container,.invoice-container a,.invoice-container button,.invoice-container input,.invoice-container label,.invoice-container td,.invoice-container th{font-size:12pt}
+        .contact-details p{font-size:10pt;margin-top:-13px}
+        .signature-area p{font-size:12pt;font-weight:600}
+        .invoice-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px}
+        .company-info{display:flex;flex-direction:column;align-items:flex-start}
+        .contact-details{margin-top:30px;color:#4b5563}
+        .invoice-title{font-size:27pt;font-weight:600;color:#374151;margin-top:0}
+        .client-info{display:flex;flex-direction:column;gap:4px}
+        .client-info h1{margin-bottom:8px}
+        .dotted-input-container{display:flex;align-items:center;margin-top:-4px}
+        .dotted-input-container label{width:100px;flex-shrink:0;margin-right:10px;display:flex;white-space:nowrap;justify-content:space-between}
+        .dotted-input-container label::after{content:':';margin-left:20px}
+        .dotted-input-container input{border:none;border-bottom:1px dotted #374151;width:100%;padding:0;font-size:12pt;font-weight:500;font-family:'Roboto Mono',monospace}
+        .dotted-input-container input:focus{outline:none;border-bottom-style:solid;border-bottom-color:#3b82f6}
+        .main-table{width:100%;border-collapse:collapse;margin-top:55px}
+        .main-table td,.main-table th{border:1px solid #ffff;padding:8px;height:23px;box-sizing:content-box}
+        .main-table th{background-color:#5c6bc0;text-align:center;color:#fff;font-weight:500}
+        .main-table td{background-color:#f9fafb}
+        .main-table th.col-no{width:8.33%}
+        .main-table th.col-nama{width:41.66%}
+        .main-table th.col-lain{width:16.67%}
+        .main-table .table-input{width:100%;border:none;padding:0 4px;font-size:12pt;background-color:transparent}
+        .main-table .table-input:focus{outline:none;background-color:#eff6ff}
+        .cell-center{text-align:center}
+        .cell-right{text-align:right}
+        .table-controls{margin-top:16px;display:flex;gap:8px;align-items:center}
+        .btn{font-weight:700;border:none;border-radius:8px;padding:6px 12px;color:#fff;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+        .btn-add{font-size:10.5pt;background-color:#6366f1}
+        .btn-add:hover{background-color:#4f46e5}
+        .btn-remove{font-size:10.5pt;background-color:#ef4444}
+        .btn-remove:hover{background-color:#dc2626}
+        .action-buttons{position:sticky;bottom:0;display:flex;gap:8px;background-color:#fff;padding:10px;border-top:1px solid #ddd;z-index:1000}
+        .btn-back{background-color:#6c757d;padding:6px}
+        .btn-back:hover{background-color:#5a6268}
+        .btn-back-small{flex-grow:0;flex-basis:7%}
+        .btn-download-large,.btn-save-large{flex-grow:1}
+        .btn-back-small svg{width:30px;height:30px;vertical-align:middle}
+        .btn-save{background-color:#3b82f6}
+        .btn-save:hover{background-color:#2563eb}
+        .btn-print{background-color:#22c55e}
+        .btn-print:hover{background-color:#16a34a}
+        .invoice-footer{margin-top:32px;display:flex;justify-content:space-between;align-items:flex-end}
+        .signature-area .stamp{margin-top:-5px;margin-left:5px;height:80px;width:80px;transform:rotate(-10deg)}
+        .thank-you-note p{font-size:10pt;font-style:italic;color:#4b5563}
+        .summary-wrapper{width:33.33%}
+        .summary-box{background-color:#f9fafb;padding:8px;border-radius:8px}
+        .summary-table{width:100%}
+        .summary-table td{padding:6px}
+        .summary-table .label{text-align:left;font-weight:700;color:#1f2937;white-space:nowrap}
+        .summary-table .value{text-align:right;font-weight:500;font-size:12pt}
+        .summary-table .value-bold{font-weight:700}
+        #uang-muka{border:none;background-color:transparent;padding:0;width:100%;text-align:right;font-weight:500;font-size:12pt}
+        #uang-muka:focus{outline:none}
+        #invoice-number,#uang-muka,.main-table .table-input,.main-table .total,.row-number,.summary-table .value{font-family:'Roboto Mono',monospace}
+        @page{size:A4 landscape;margin:38px}
+        @media print{body{background-color:#fff;padding:0;display:block;min-height:unset;align-items:unset}
+        .invoice-container{max-width:100%;box-shadow:none}
+        .dotted-input-container input{border-bottom:none}
+        .action-buttons,.table-controls{display:none}
+        .main-table td,.main-table th,.summary-box{-webkit-print-color-adjust:exact;color-adjust:exact}
+        .invoice-header{page-break-inside:avoid;page-break-after:avoid}
+        .main-table{page-break-inside:auto}
+        .main-table tr{page-break-inside:avoid;page-break-after:auto}
+        .invoice-footer{page-break-before:always;page-break-inside:avoid}}
+        @media (max-width:640px){body{padding:0;align-items:flex-start}
+        .invoice-container{min-height:100vh;box-shadow:none}
+        .invoice-body{padding:16px}
+        .action-buttons{padding:10px 16px}
+        .invoice-header{flex-direction:column;gap:20px}
+        .client-info{width:100%}
+        .invoice-title{font-size:22pt;text-align:left}
+        .dotted-input-container label{width:100px}
+        .main-table thead{display:none}
+        .main-table tr{display:block;border:1px solid #ddd;border-radius:8px;margin-bottom:16px;padding:10px}
+        .main-table td{display:flex;justify-content:space-between;align-items:center;border:none;border-bottom:1px solid #eee;padding:10px 5px;text-align:right;background-color:transparent}
+        .main-table td:last-child{border-bottom:none}
+        .main-table td::before{content:attr(data-label);font-weight:700;text-align:left;padding-right:10px}
+        .main-table .table-input{width:50%;text-align:left}
+        .invoice-footer{flex-direction:column-reverse;align-items:flex-start;gap:32px}
+        .summary-wrapper{width:100%}}
+        .force-desktop .invoice-header{flex-direction:row!important}
+        .force-desktop .client-info{width:auto!important}
+        .force-desktop .main-table thead{display:table-header-group!important}
+        .force-desktop .main-table tr{display:table-row!important;border:none!important;border-radius:0!important;margin-bottom:0!important;padding:0!important}
+        .force-desktop .main-table td{display:table-cell!important;justify-content:initial!important;align-items:initial!important;border:1px solid #fff!important;padding:8px!important;text-align:left;background-color:#f9fafb}
+        .force-desktop .main-table td::before{content:none!important}
+        .force-desktop .main-table .cell-center,.force-desktop .main-table .input-qty{text-align:center!important}
+        .force-desktop .main-table .cell-right,.force-desktop .main-table .input-price{text-align:right!important}
+        .force-desktop .main-table .table-input{width:100%!important;text-align:left}
+        .force-desktop .invoice-footer{flex-direction:row!important;align-items:flex-end!important}
+        .force-desktop .summary-wrapper{width:33.33%!important}
+        .force-desktop .invoice-title{font-size:27pt}
+        .invoice-body.force-desktop{padding:38px!important}
+        #loading-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background-color:#fff;z-index:10000;display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:14pt;color:#374151}
+        .spinner{border:6px solid #f3f3f3;border-top:6px solid #3b82f6;border-radius:50%;width:50px;height:50px;animation:spin 1s linear infinite;margin-bottom:20px}
+        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        #watermark-lunas{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-20deg);font-size:80pt;font-weight:700;color:#ff000026;z-index:1000;pointer-events:none;text-align:center;border:5px solid #ff000026;padding:0 20px;border-radius:10px}
+        .invoice-body.watermarked #watermark-lunas{display:block}
+        .toggle-container{background-color:#ef4444;padding:6px 12px;border-radius:8px;display:inline-flex;align-items:center;cursor:pointer}
+        .toggle-container input{margin-right:8px;transform:scale(1.2);cursor:pointer}
+        .toggle-container label{font-weight:700;cursor:pointer;margin-bottom:0;color:#fff}
+        #toggle-watermark{accent-color:#fff}
     </style>
 </head>
 <body>
@@ -530,7 +123,7 @@
         <div class="invoice-body" id="invoice-to-print">
             <div id="watermark-lunas">LUNAS</div>
             <header class="invoice-header">
-                <div class="company-info"> 
+                <div class="company-info">
                     <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/logo_rp.svg" alt="Logo Roviana Printing" width="310">
                     <div class="contact-details">
                         <p>0853 2230 7373</p>
@@ -558,7 +151,6 @@
                     </div>
                 </div>
             </header>
-
             <main>
                 <table class="main-table">
                     <thead>
@@ -570,8 +162,7 @@
                             <th class="col-lain">JUMLAH</th>
                         </tr>
                     </thead>
-                    <tbody id="invoice-items">
-                    </tbody>
+                    <tbody id="invoice-items"></tbody>
                 </table>
                 <div class="table-controls">
                     <button id="add-row" class="btn btn-add">+ Tambah Baris</button>
@@ -582,11 +173,10 @@
                     </div>
                 </div>
             </main>
-
             <footer class="invoice-footer">
                 <div class="signature-area">
                     <p>Hormat Kami,</p>
-                    <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/rp_stempel_merah.png" alt="Stempel Original" class="stamp"> 
+                    <img src="https://raw.githubusercontent.com/yeliva/faktur/main/images/rp_stempel_merah.png" alt="Stempel Original" class="stamp">
                 </div>
                 <div class="summary-wrapper">
                     <div class="summary-box">
@@ -598,7 +188,7 @@
                             <tr id="dp-row">
                                 <td class="label">Uang Muka</td>
                                 <td class="value">
-                                    <input type="text" id="uang-muka" oninput="formatInputField(event)"  placeholder="...">
+                                    <input type="text" id="uang-muka" oninput="formatInputField(event)" placeholder="...">
                                 </td>
                             </tr>
                             <tr id="sisa-row">
@@ -609,7 +199,6 @@
                     </div>
                 </div>
             </footer>
-            
             <div class="thank-you-note">
                 <p>Terima kasih telah mempercayakan kebutuhan cetak Anda kepada Roviana Printing!</p>
             </div>
@@ -618,7 +207,7 @@
             <a href="index.html" class="btn btn-back btn-back-small" title="Kembali ke Beranda">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g id="SVGRepo_iconCarrier">
-                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.5192 7.82274C2 8.77128 2 9.91549 2 12.2039V13.725C2 17.6258 2 19.5763 3.17157 20.7881C4.34315 22 6.22876 22 10 22H14C17.7712 22 19.6569 22 20.8284 20.7881C22 19.5763 22 17.6258 22 13.725V12.2039C22 9.91549 22 8.77128 21.4808 7.82274C20.9616 6.87421 20.0131 6.28551 18.116 5.10812L16.116 3.86687C14.1106 2.62229 13.1079 2 12 2C10.8921 2 9.88939 2.62229 7.88403 3.86687L5.88403 5.10813C3.98695 6.28551 3.0384 6.87421 2.5192 7.82274ZM9 17.25C8.58579 17.25 8.25 17.5858 8.25 18C8.25 18.4142 8.58579 18.75 9 18.75H15C15.4142 18.75 15.75 18.4142 15.75 18C15.75 17.5858 15.4142 17.25 15 17.25H9Z" fill="#FFFFFF"></path> 
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.5192 7.82274C2 8.77128 2 9.91549 2 12.2039V13.725C2 17.6258 2 19.5763 3.17157 20.7881C4.34315 22 6.22876 22 10 22H14C17.7712 22 19.6569 22 20.8284 20.7881C22 19.5763 22 17.6258 22 13.725V12.2039C22 9.91549 22 8.77128 21.4808 7.82274C20.9616 6.87421 20.0131 6.28551 18.116 5.10812L16.116 3.86687C14.1106 2.62229 13.1079 2 12 2C10.8921 2 9.88939 2.62229 7.88403 3.86687L5.88403 5.10813C3.98695 6.28551 3.0384 6.87421 2.5192 7.82274ZM9 17.25C8.58579 17.25 8.25 17.5858 8.25 18C8.25 18.4142 8.58579 18.75 9 18.75H15C15.4142 18.75 15.75 18.4142 15.75 18C15.75 17.5858 15.4142 17.25 15 17.25H9Z" fill="#FFFFFF"></path>
                     </g>
                 </svg>
             </a>
@@ -626,313 +215,255 @@
             <button id="download-pdf-button" class="btn btn-print btn-download-large">Download PDF</button>
         </div>
     </div>
-    
     <datalist id="invoice-number-list"></datalist>
-
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // ---------------------------------------------------------------------------------
-        // PASTIKAN ANDA MENGGANTI URL INI DENGAN URL WEB APP ANDA YANG SUDAH DI-DEPLOY
-        const G_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby67XUBRaaNmjoHVbbswc4JyXN5sm9wL01GPIVhewikrTHtkP1hLkJCW0Xn1NrafVeHyA/exec';
-        // ---------------------------------------------------------------------------------
-
-        // --- Element References ---
-        const invoiceNumberInput = document.getElementById('invoice-number');
-        const clientNameInput = document.getElementById('client-name');
-        const invoiceDateInput = document.getElementById('invoice-date');
-        const clientPhoneInput = document.getElementById('client-phone');
-        const itemsTbody = document.getElementById('invoice-items');
-        const uangMukaInput = document.getElementById('uang-muka');
-        const addRowBtn = document.getElementById('add-row');
-        const removeRowBtn = document.getElementById('remove-row');
-        const saveButton = document.getElementById('save-button');
-        const downloadPdfButton = document.getElementById('download-pdf-button');
-        const invoiceNumberList = document.getElementById('invoice-number-list');
-        const toggleWatermark = document.getElementById('toggle-watermark');
-        const invoiceBody = document.getElementById('invoice-to-print');
-
-        let flatpickrInstance = flatpickr("#invoice-date", { dateFormat: "d/m/Y", defaultDate: "today", allowInput: true });
-
-        // --- Functions ---
-        function generateInvoiceNumber() {
-    const now = new Date();
-    const year = now.getFullYear().toString().slice(-2);
-    const month = (now.getMonth() + 1).toString().padStart(2, '0');
-    const day = now.getDate().toString().padStart(2, '0');
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    const seconds = now.getSeconds().toString().padStart(2, '0'); // <-- Tambahkan baris ini
-    return `FRP/${year}${month}${day}/${hours}${minutes}/${seconds}`; // <-- Tambahkan ${seconds} di sini
-        }
-        
-        function clearForm() {
-            clientNameInput.value = '';
-            invoiceDateInput.value = '';
-            clientPhoneInput.value = '';
-            itemsTbody.innerHTML = '';
-            uangMukaInput.value = '';
-            flatpickrInstance.setDate(new Date());
-            addRow();
-            calculateTotal();
-        }
-
-        function startNewInvoice() {
-            clearForm(); 
-            invoiceNumberInput.value = generateInvoiceNumber();
-        }
-        
-        function populateForm(data) {
-            invoiceNumberInput.value = data.nomorFaktur || '';
-            clientNameInput.value = data.kepada || '';
-            clientPhoneInput.value = data.telepon || '';
-            if (data.tanggal) {
-    // Langsung baca format tanggal standar dari Google Sheet
-    flatpickrInstance.setDate(new Date(data.tanggal));
-} else {
-    // Jika tidak ada tanggal, gunakan tanggal hari ini
-    flatpickrInstance.setDate(new Date());
-}
-
-            itemsTbody.innerHTML = '';
-            if (data.items && data.items.length > 0) {
-                data.items.forEach(item => {
-                    const newRow = itemsTbody.insertRow();
-                    newRow.innerHTML = `
-                        <td data-label="No" class="cell-center"><span class="row-number"></span></td>
-                        <td data-label="Nama Pesanan"><input type="text" class="table-input input-nama" value="${item.nama || ''}"></td>
-                        <td data-label="Banyak"><input type="number" min="0" class="table-input input-qty cell-center" oninput="calculateTotal()" value="${item.banyak || ''}"></td>
-                        <td data-label="Harga Satuan"><input type="text" class="table-input input-price cell-right" oninput="formatInputField(event)" value="${item.harga || ''}"></td>
-                        <td data-label="Jumlah" class="cell-right"><span class="total"></span></td>
-                    `;
-                });
-            } else {
-                addRow();
-            }
-            renumberRows();
-            calculateTotal();
-        }
-
-        function fetchInvoiceData(invoiceNumber) {
-            if (!invoiceNumber || invoiceNumber.length < 5) {
-                startNewInvoice();
-                invoiceNumberInput.value = invoiceNumber; // Pertahankan yang diketik
-                return;
-            };
-            fetch(`${G_SCRIPT_URL}?invoiceNumber=${encodeURIComponent(invoiceNumber)}`)
-                .then(res => {
-                    if (!res.ok) { throw new Error('Network response was not ok'); }
-                    return res.json();
-                })
-                .then(data => {
-                    if (data && data.items && data.items.length > 0) {
-                        populateForm(data);
-                    } else {
-                        // Jika tidak ada data ditemukan, anggap ini faktur baru
-                        clearForm();
-                        invoiceNumberInput.value = invoiceNumber;
-                    }
-                })
-                .catch(error => {
-                    console.error('Gagal mengambil data faktur:', error);
-                    clearForm();
-                    invoiceNumberInput.value = invoiceNumber;
-                });
-        }
-        
-        function formatRupiah(angka) {
-            if(isNaN(angka) || angka === 0) return '';
-            if(typeof angka === 'string' && angka.startsWith('Rp')) return angka;
-            return 'Rp ' + new Intl.NumberFormat('id-ID').format(angka);
-        }
-
-        function parseRupiah(rupiahString) {
-            if (typeof rupiahString !== 'string') return 0;
-            return Number(rupiahString.replace(/[^0-9]/g, ''));
-        }
-
-        window.calculateTotal = function () {
-            let subtotal = 0;
-            itemsTbody.querySelectorAll('tr').forEach(row => {
-                const qty = parseFloat(row.querySelector('.input-qty').value) || 0;
-                const priceInput = row.querySelector('.input-price');
-                priceInput.value = formatRupiah(parseRupiah(priceInput.value));
-                const price = parseRupiah(priceInput.value) || 0;
-                const lineTotal = qty * price;
-                row.querySelector('.total').textContent = formatRupiah(lineTotal);
-                subtotal += lineTotal;
-            });
-            const uangMuka = parseRupiah(uangMukaInput.value) || 0;
-            document.getElementById('subtotal').textContent = formatRupiah(subtotal);
-            document.getElementById('sisa').textContent = formatRupiah(subtotal - uangMuka);
-        };
-        
-        window.formatInputField = function(e) {
-            e.target.value = formatRupiah(parseRupiah(e.target.value));
-            calculateTotal();
-        };
-
-        function renumberRows() {
-            itemsTbody.querySelectorAll('tr').forEach((row, index) => {
-                row.querySelector('.row-number').textContent = index + 1;
-            });
-        }
-
-        function addRow() {
-            const newRow = itemsTbody.insertRow();
-            newRow.innerHTML = `
-                <td data-label="No" class="cell-center"><span class="row-number"></span></td>
-                <td data-label="Nama Pesanan"><input type="text" class="table-input input-nama" placeholder="..."></td>
-                <td data-label="Banyak"><input type="number" min="0" class="table-input input-qty cell-center" oninput="calculateTotal()" placeholder="..."></td>
-                <td data-label="Harga Satuan"><input type="text" class="table-input input-price cell-right" oninput="formatInputField(event)" placeholder="..."></td>
-                <td data-label="Jumlah" class="cell-right"><span class="total"></span></td>
-            `;
-            renumberRows();
-            calculateTotal();
-        }
-        
-        async function simpanKeSheet(showNotification = true) {
-            const items = [];
-            let hasValidItem = false;
-            document.querySelectorAll('#invoice-items tr').forEach(row => {
-                const namaPesanan = row.querySelector('.input-nama').value.trim();
-                const banyak = row.querySelector('.input-qty').value.trim();
-                const harga = row.querySelector('.input-price').value.trim();
-                if (namaPesanan && banyak && parseFloat(banyak) > 0 && harga && parseRupiah(harga) > 0) {
-                    hasValidItem = true;
-                    items.push({
-                        nama: namaPesanan,
-                        banyak: banyak,
-                        harga: harga,
-                        jumlah: row.querySelector('.total').textContent
-                    });
-                }
-            });
-            if (!hasValidItem) {
-                if (showNotification) Toastify({ text: "Harap isi Nama, Banyak, & Harga.", duration: 3000, gravity: "top", position: "center", style: { background: "linear-gradient(to right, #ff5f6d, #ffc371)" } }).showToast();
-                return false;
-            }
-            const invoiceData = {
-                nomorFaktur: invoiceNumberInput.value,
-                tanggal: invoiceDateInput.value,
-                kepada: clientNameInput.value,
-                telepon: clientPhoneInput.value,
-                items: items
-            };
-            try {
-                await fetch(G_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(invoiceData),
-                    mode: 'no-cors'
-                });
-                if (showNotification) Toastify({ text: "✔ Data berhasil disimpan ke Google Sheets!", duration: 3000, gravity: "top", position: "center", style: { background: "linear-gradient(to right, #00b09b, #96c93d)" } }).showToast();
-                return true;
-            } catch (error) {
-                console.error('Terjadi kesalahan jaringan:', error);
-                if (showNotification) Toastify({ text: "Gagal menyimpan. Periksa koneksi internet Anda.", duration: 3000, gravity: "top", position: "center", style: { background: "#ef4444" } }).showToast();
-                return false;
-            }
-        }
-
-        // --- Event Listeners ---
-        addRowBtn.addEventListener('click', addRow);
-        removeRowBtn.addEventListener('click', () => {
-            if (itemsTbody.rows.length > 1) {
-                itemsTbody.deleteRow(-1);
-                calculateTotal();
-            }
-        });
-
-        invoiceNumberInput.addEventListener('change', (e) => {
-            const selectedValue = e.target.value;
-            if(selectedValue) {
-                fetchInvoiceData(selectedValue);
-            } else {
-                startNewInvoice();
-            }
-        });
-        
-        saveButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            simpanKeSheet();
-        });
-        
-        toggleWatermark.addEventListener('change', function() {
-            invoiceBody.classList.toggle('watermarked', this.checked);
-        });
-        
-        // FUNGSI UNTUK DOWNLOAD PDF (DIKEMBALIKAN)
-        downloadPdfButton.addEventListener('click', function(event) { 
-            event.preventDefault();
-            simpanKeSheet(false);
-            const originalElement = document.getElementById('invoice-to-print');
-            const loadingOverlay = document.getElementById('loading-overlay');
-            const tableControls = document.querySelector('.table-controls');
-            const clientName = clientNameInput.value.trim() || 'Customer';
-            const invoiceNumber = invoiceNumberInput.value.replace(/\//g, '-');
-            const fileName = `Faktur - ${clientName} - ${invoiceNumber}.pdf`;
-            const opt = { margin: [1, 1, 1, 1], filename: fileName, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }, pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } };
-            
-            loadingOverlay.style.display = 'flex';
-            
-            setTimeout(() => {
-                const originalDpDisplay = document.getElementById('dp-row').style.display;
-                const originalSisaDisplay = document.getElementById('sisa-row').style.display;
-                const originalTableControlsDisplay = tableControls.style.display;
-                
-                if (flatpickrInstance) flatpickrInstance.destroy();
-                
-                tableControls.style.display = 'none';
-                originalElement.classList.add('force-desktop');
-                
-                const uangMukaValue = parseRupiah(uangMukaInput.value) || 0;
-                if (uangMukaValue === 0) {
-                    document.getElementById('dp-row').style.display = 'none';
-                    document.getElementById('sisa-row').style.display = 'none';
-                }
-                
-                const inputsToClean = document.querySelectorAll('.dotted-input-container input');
-                inputsToClean.forEach(input => input.style.borderBottom = 'none');
-                
-                html2pdf().from(originalElement).set(opt).save()
-                .then(() => {
-                    Toastify({ text: "✔ Faktur berhasil diunduh!", duration: 3000, gravity: "top", position: "center", style: { background: "linear-gradient(to right, #00b09b, #96c93d)" } }).showToast();
-                })
-                .finally(() => {
-                    originalElement.classList.remove('force-desktop');
-                    document.getElementById('dp-row').style.display = originalDpDisplay;
-                    document.getElementById('sisa-row').style.display = originalSisaDisplay;
-                    inputsToClean.forEach(input => input.style.borderBottom = '');
-                    tableControls.style.display = 'flex';
-                    flatpickrInstance = flatpickr("#invoice-date", { dateFormat: "d/m/Y", defaultDate: "today", allowInput: true });
-                    loadingOverlay.style.display = 'none';
-                });
-            }, 100); 
-        });
-
-        // --- Initial Load ---
-        fetch(G_SCRIPT_URL)
-            .then(res => res.json())
-            .then(invoiceNumbers => {
-                invoiceNumberList.innerHTML = '';
-                invoiceNumbers.forEach(num => {
-                    invoiceNumberList.innerHTML += `<option value="${num}">`;
-                });
-            })
-            .catch(error => console.error('Gagal memuat daftar faktur:', error));
-
-        startNewInvoice();
-    });
-</script>
-    
     <div id="loading-overlay" style="display: none;">
         <div class="spinner"></div>
         <p>Membuat PDF...</p>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const G_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby67XUBRaaNmjoHVbbswc4JyXN5sm9wL01GPIVhewikrTHtkP1hLkJCW0Xn1NrafVeHyA/exec';
+            const invoiceNumberInput = document.getElementById('invoice-number');
+            const clientNameInput = document.getElementById('client-name');
+            const invoiceDateInput = document.getElementById('invoice-date');
+            const clientPhoneInput = document.getElementById('client-phone');
+            const itemsTbody = document.getElementById('invoice-items');
+            const uangMukaInput = document.getElementById('uang-muka');
+            const addRowBtn = document.getElementById('add-row');
+            const removeRowBtn = document.getElementById('remove-row');
+            const saveButton = document.getElementById('save-button');
+            const downloadPdfButton = document.getElementById('download-pdf-button');
+            const invoiceNumberList = document.getElementById('invoice-number-list');
+            const toggleWatermark = document.getElementById('toggle-watermark');
+            const invoiceBody = document.getElementById('invoice-to-print');
+            let flatpickrInstance = flatpickr("#invoice-date", { dateFormat: "d/m/Y", defaultDate: "today", allowInput: true });
 
+            const formatRupiah = (angka) => {
+                if (isNaN(angka) || angka === 0) return '';
+                if (typeof angka === 'string' && angka.startsWith('Rp')) return angka;
+                return 'Rp ' + new Intl.NumberFormat('id-ID').format(angka);
+            };
+
+            const parseRupiah = (rupiahString) => {
+                return Number(String(rupiahString).replace(/[^0-9]/g, '')) || 0;
+            };
+
+            const calculateTotal = () => {
+                let subtotal = 0;
+                itemsTbody.querySelectorAll('tr').forEach(row => {
+                    const qty = parseFloat(row.querySelector('.input-qty').value) || 0;
+                    const priceInput = row.querySelector('.input-price');
+                    const price = parseRupiah(priceInput.value);
+                    const lineTotal = qty * price;
+                    row.querySelector('.total').textContent = formatRupiah(lineTotal);
+                    subtotal += lineTotal;
+                });
+                const uangMuka = parseRupiah(uangMukaInput.value);
+                document.getElementById('subtotal').textContent = formatRupiah(subtotal);
+                document.getElementById('sisa').textContent = formatRupiah(subtotal - uangMuka);
+            };
+            
+            window.formatInputField = (e) => {
+                e.target.value = formatRupiah(parseRupiah(e.target.value));
+                calculateTotal();
+            };
+
+            const renumberRows = () => {
+                itemsTbody.querySelectorAll('tr').forEach((row, index) => {
+                    row.querySelector('.row-number').textContent = index + 1;
+                });
+            };
+
+            const addRow = () => {
+                const newRow = itemsTbody.insertRow();
+                newRow.innerHTML = `
+                    <td data-label="No" class="cell-center"><span class="row-number"></span></td>
+                    <td data-label="Nama Pesanan"><input type="text" class="table-input input-nama" placeholder="..."></td>
+                    <td data-label="Banyak"><input type="number" min="0" class="table-input input-qty cell-center" oninput="calculateTotal()" placeholder="..."></td>
+                    <td data-label="Harga Satuan"><input type="text" class="table-input input-price cell-right" oninput="formatInputField(event)" placeholder="..."></td>
+                    <td data-label="Jumlah" class="cell-right"><span class="total"></span></td>`;
+                renumberRows();
+            };
+
+            const clearForm = () => {
+                clientNameInput.value = '';
+                invoiceDateInput.value = '';
+                clientPhoneInput.value = '';
+                itemsTbody.innerHTML = '';
+                uangMukaInput.value = '';
+                flatpickrInstance.setDate(new Date());
+                addRow();
+                calculateTotal();
+            };
+            
+            const startNewInvoice = () => {
+                clearForm();
+                const now = new Date();
+                const year = now.getFullYear().toString().slice(-2);
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                invoiceNumberInput.value = `FRP/${year}${month}${day}/${hours}${minutes}/${seconds}`;
+            };
+            
+            const populateForm = (data) => {
+                invoiceNumberInput.value = data.nomorFaktur || '';
+                clientNameInput.value = data.kepada || '';
+                clientPhoneInput.value = data.telepon || '';
+                flatpickrInstance.setDate(data.tanggal ? new Date(data.tanggal) : new Date());
+                itemsTbody.innerHTML = '';
+                if (data.items && data.items.length > 0) {
+                    data.items.forEach(item => {
+                        const newRow = itemsTbody.insertRow();
+                        newRow.innerHTML = `
+                            <td data-label="No" class="cell-center"><span class="row-number"></span></td>
+                            <td data-label="Nama Pesanan"><input type="text" class="table-input input-nama" value="${item.nama || ''}"></td>
+                            <td data-label="Banyak"><input type="number" min="0" class="table-input input-qty cell-center" oninput="calculateTotal()" value="${item.banyak || ''}"></td>
+                            <td data-label="Harga Satuan"><input type="text" class="table-input input-price cell-right" oninput="formatInputField(event)" value="${formatRupiah(item.harga) || ''}"></td>
+                            <td data-label="Jumlah" class="cell-right"><span class="total">${formatRupiah(item.jumlah)}</span></td>`;
+                    });
+                } else {
+                    addRow();
+                }
+                renumberRows();
+                calculateTotal();
+            };
+            
+            const fetchInvoiceData = async (invoiceNumber) => {
+                if (!invoiceNumber || invoiceNumber.length < 5) {
+                    startNewInvoice();
+                    invoiceNumberInput.value = invoiceNumber;
+                    return;
+                }
+                try {
+                    const response = await fetch(`${G_SCRIPT_URL}?invoiceNumber=${encodeURIComponent(invoiceNumber)}`);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    const data = await response.json();
+                    if (data && data.items && data.items.length > 0) {
+                        populateForm(data);
+                    } else {
+                        clearForm();
+                        invoiceNumberInput.value = invoiceNumber;
+                    }
+                } catch (error) {
+                    console.error('Gagal mengambil data faktur:', error);
+                    clearForm();
+                    invoiceNumberInput.value = invoiceNumber;
+                }
+            };
+            
+            const simpanKeSheet = async (showNotification = true) => {
+                const items = Array.from(document.querySelectorAll('#invoice-items tr')).map(row => ({
+                    nama: row.querySelector('.input-nama').value.trim(),
+                    banyak: row.querySelector('.input-qty').value.trim(),
+                    harga: row.querySelector('.input-price').value.trim(),
+                    jumlah: row.querySelector('.total').textContent
+                })).filter(item => item.nama && parseFloat(item.banyak) > 0 && parseRupiah(item.harga) > 0);
+
+                if (items.length === 0) {
+                    if (showNotification) Toastify({ text: "Harap isi Nama, Banyak, & Harga.", duration: 3000, gravity: "top", position: "center", style: { background: "linear-gradient(to right, #ff5f6d, #ffc371)" } }).showToast();
+                    return false;
+                }
+                
+                const invoiceData = {
+                    nomorFaktur: invoiceNumberInput.value,
+                    tanggal: invoiceDateInput.value,
+                    kepada: clientNameInput.value,
+                    telepon: clientPhoneInput.value,
+                    items: items
+                };
+
+                try {
+                    await fetch(G_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify(invoiceData),
+                        mode: 'no-cors'
+                    });
+                    if (showNotification) Toastify({ text: "✔ Data berhasil disimpan ke Google Sheets!", duration: 3000, gravity: "top", position: "center", style: { background: "linear-gradient(to right, #00b09b, #96c93d)" } }).showToast();
+                    return true;
+                } catch (error) {
+                    console.error('Terjadi kesalahan jaringan:', error);
+                    if (showNotification) Toastify({ text: "Gagal menyimpan. Periksa koneksi internet Anda.", duration: 3000, gravity: "top", position: "center", style: { background: "#ef4444" } }).showToast();
+                    return false;
+                }
+            };
+
+            addRowBtn.addEventListener('click', addRow);
+            removeRowBtn.addEventListener('click', () => {
+                if (itemsTbody.rows.length > 1) {
+                    itemsTbody.deleteRow(-1);
+                    calculateTotal();
+                }
+            });
+            invoiceNumberInput.addEventListener('change', (e) => fetchInvoiceData(e.target.value));
+            saveButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                simpanKeSheet();
+            });
+            toggleWatermark.addEventListener('change', function() {
+                invoiceBody.classList.toggle('watermarked', this.checked);
+            });
+
+            downloadPdfButton.addEventListener('click', async (event) => {
+                event.preventDefault();
+                await simpanKeSheet(false);
+                
+                const originalElement = document.getElementById('invoice-to-print');
+                const loadingOverlay = document.getElementById('loading-overlay');
+                const clientName = clientNameInput.value.trim() || 'Customer';
+                const invoiceNumber = invoiceNumberInput.value.replace(/\//g, '-');
+                const fileName = `Faktur - ${clientName} - ${invoiceNumber}.pdf`;
+                const opt = { margin: [1, 1, 1, 1], filename: fileName, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } };
+                
+                loadingOverlay.style.display = 'flex';
+                
+                const dpRow = document.getElementById('dp-row');
+                const sisaRow = document.getElementById('sisa-row');
+                const tableControls = document.querySelector('.table-controls');
+                const originalStyles = {
+                    dp: dpRow.style.display,
+                    sisa: sisaRow.style.display,
+                    controls: tableControls.style.display,
+                };
+
+                tableControls.style.display = 'none';
+                if (parseRupiah(uangMukaInput.value) === 0) {
+                    dpRow.style.display = 'none';
+                    sisaRow.style.display = 'none';
+                }
+                
+                originalElement.classList.add('force-desktop');
+                document.querySelectorAll('.dotted-input-container input').forEach(input => input.style.borderBottom = 'none');
+                if (flatpickrInstance) flatpickrInstance.destroy();
+                
+                html2pdf().from(originalElement).set(opt).save().then(() => {
+                    Toastify({ text: "✔ Faktur berhasil diunduh!", duration: 3000, gravity: "top", position: "center", style: { background: "linear-gradient(to right, #00b09b, #96c93d)" } }).showToast();
+                }).finally(() => {
+                    originalElement.classList.remove('force-desktop');
+                    dpRow.style.display = originalStyles.dp;
+                    sisaRow.style.display = originalStyles.sisa;
+                    tableControls.style.display = originalStyles.controls;
+                    document.querySelectorAll('.dotted-input-container input').forEach(input => input.style.borderBottom = '');
+                    flatpickrInstance = flatpickr("#invoice-date", { dateFormat: "d/m/Y", defaultDate: "today", allowInput: true });
+                    loadingOverlay.style.display = 'none';
+                });
+            });
+
+            fetch(G_SCRIPT_URL)
+                .then(res => res.json())
+                .then(invoiceNumbers => {
+                    invoiceNumberList.innerHTML = invoiceNumbers.map(num => `<option value="${num}"></option>`).join('');
+                })
+                .catch(error => console.error('Gagal memuat daftar faktur:', error));
+
+            startNewInvoice();
+        });
+    </script>
 </body>
 </html>
