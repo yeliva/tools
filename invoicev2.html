@@ -666,7 +666,7 @@
     const hours = now.getHours().toString().padStart(2, '0');
     const minutes = now.getMinutes().toString().padStart(2, '0');
     const seconds = now.getSeconds().toString().padStart(2, '0'); // <-- Tambahkan baris ini
-    return `FRP/${year}${month}${day}/${hours}${minutes}${seconds}`; // <-- Tambahkan ${seconds} di sini
+    return `FRP/${year}${month}${day}/${hours}${minutes}/${seconds}`; // <-- Tambahkan ${seconds} di sini
         }
         
         function clearForm() {
