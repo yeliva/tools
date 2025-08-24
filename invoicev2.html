@@ -279,10 +279,11 @@
         #invoice-number {
             font-family: 'Roboto Mono', monospace;
         }
-        #invoice-number::-webkit-calendar-picker-indicator {
-            display: none !important;
-            -webkit-appearance: none !important;
-        }
+        /* Menyembunyikan panah dropdown bawaan secara paksa di semua kondisi */
+#invoice-number::-webkit-calendar-picker-indicator {
+    display: none !important;
+    -webkit-appearance: none !important;
+}
         
         @page {
             size: A4 landscape;
