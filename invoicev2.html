@@ -233,11 +233,15 @@
         }
         .summary-wrapper {
             width: 33.33%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
         }
         .summary-box {
             background-color: #f9fafb;
             padding: 8px;
             border-radius: 8px;
+            width:100%;
         }
         .summary-table {
             width: 100%;
@@ -303,7 +307,7 @@
             .dotted-input-container input {
                 border-bottom: none;
             }
-            .table-controls, .action-buttons {
+            .table-controls, .action-buttons, .toggle-container {
                 display: none;
             }
             .main-table th, .summary-box, .main-table td {
@@ -392,7 +396,7 @@
             .invoice-footer {
                 flex-direction: column-reverse;
                 align-items: flex-start;
-                gap: 32px;
+                gap: 10px;
             }
             .summary-wrapper {
                 width: 100%;
@@ -487,14 +491,14 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-20deg);
-            font-size: 80pt;
+            font-size: 60pt;
             font-weight: bold;
             color: rgba(255, 0, 0, 0.15);
             z-index: 1000;
             pointer-events: none;
             text-align: center;
-            border: 5px solid rgba(255, 0, 0, 0.15);
-            padding: 0 20px;
+            border: 4px solid rgba(255, 0, 0, 0.15);
+            padding:0 20px;
             border-radius: 10px;
         }
 
@@ -503,12 +507,13 @@
         }
         
         .toggle-container {
-            background-color: #ef4444; 
+            background-color: #3b82f6; 
             padding: 6px 12px;
             border-radius: 8px;
             display: inline-flex;
             align-items: center;
             cursor: pointer;
+            margin-top: 20px;
             
         }
 
@@ -525,7 +530,7 @@
             color:#fff;
         }
         #toggle-watermark {
-            accent-color: #fff;
+            accent-color: #3b82f6;
         }
     </style>
 </head>
@@ -580,10 +585,6 @@
                 <div class="table-controls">
                     <button id="add-row" class="btn btn-add">+ Tambah Baris</button>
                     <button id="remove-row" class="btn btn-remove">- Kurangi Baris</button>
-                    <div class="toggle-container">
-                        <input type="checkbox" id="toggle-watermark">
-                        <label for="toggle-watermark">Tandai Lunas</label>
-                    </div>
                 </div>
             </main>
 
@@ -610,6 +611,10 @@
                                 <td class="value value-bold" id="sisa"></td>
                             </tr>
                         </table>
+                    </div>
+                    <div class="toggle-container">
+                        <input type="checkbox" id="toggle-watermark">
+                        <label for="toggle-watermark">Tandai Lunas</label>
                     </div>
                 </div>
             </footer>
@@ -866,6 +871,7 @@
             const originalElement = document.getElementById('invoice-to-print');
             const loadingOverlay = document.getElementById('loading-overlay');
             const tableControls = document.querySelector('.table-controls');
+            const toggleContainer = document.querySelector('.toggle-container')
             const clientName = clientNameInput.value.trim() || 'Customer';
             const invoiceNumber = invoiceNumberInput.value.replace(/\//g, '-');
             const fileName = `Faktur - ${clientName} - ${invoiceNumber}.pdf`;
@@ -881,6 +887,7 @@
                 if (flatpickrInstance) flatpickrInstance.destroy();
                 
                 tableControls.style.display = 'none';
+                toggleContainer.style.display = 'none';
                 originalElement.classList.add('force-desktop');
                 
                 const uangMukaValue = parseRupiah(uangMukaInput.value) || 0;
@@ -902,6 +909,7 @@
                     document.getElementById('sisa-row').style.display = originalSisaDisplay;
                     inputsToClean.forEach(input => input.style.borderBottom = '');
                     tableControls.style.display = 'flex';
+                    toggleContainer.style.display = 'inline-flex';
                     flatpickrInstance = flatpickr("#invoice-date", { dateFormat: "d/m/Y", defaultDate: "today", allowInput: true });
                     loadingOverlay.style.display = 'none';
                 });
