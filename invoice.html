@@ -108,13 +108,42 @@
             padding: 0;
             font-size:12pt;
             font-weight: 500;
-            font-family: 'Roboto Mono', monospace
+            font-family: 'Roboto Mono', monospace;
+            background-color: transparent;
         }
+        
         .dotted-input-container input:focus {
             outline: none;
             border-bottom-style: solid;
             border-bottom-color: #3b82f6;
         }
+
+        #invoice-suggestions {
+            display: none; 
+            position: absolute;
+            top: 100%; 
+            left: 110px; 
+            width: 250px;
+            max-height: 150px;
+            overflow-y: auto;
+            background-color: #333;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1001; 
+            margin-top: 5px; 
+        }
+
+        .suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .suggestion-item:hover {
+            background-color: #555;
+        }
+
 
         .main-table {
             width: 100%;
@@ -287,10 +316,6 @@
         #invoice-number {
             font-family: 'Roboto Mono', monospace;
         }
-        #invoice-number::-webkit-calendar-picker-indicator {
-            display: none !important;
-            -webkit-appearance: none !important;
-        }
         
         @page {
             size: A4 landscape;
@@ -309,7 +334,7 @@
                 box-shadow: none;
             }
             .dotted-input-container input {
-                border-bottom: none;
+                border-bottom: none !important;
             }
             .table-controls, .action-buttons, .toggle-container {
                 display: none;
@@ -556,9 +581,10 @@
                 </div>
                 <div class="client-info">
                     <h1 class="invoice-title">FAKTUR PESANAN</h1>
-                    <div class="dotted-input-container">
+                    <div class="dotted-input-container" style="position: relative;">
                         <label for="invoice-number"><span>No. Faktur</span></label>
-                        <input type="text" id="invoice-number" list="invoice-number-list" autocomplete="off">
+                        <input type="text" id="invoice-number" autocomplete="off">
+                        <div id="invoice-suggestions"></div>
                     </div>
                     <div class="dotted-input-container">
                         <label for="client-name"><span>Kepada</span></label>
@@ -644,8 +670,6 @@
         </div>
     </div>
     
-    <datalist id="invoice-number-list"></datalist>
-
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -653,8 +677,9 @@
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         const G_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby67XUBRaaNmjoHVbbswc4JyXN5sm9wL01GPIVhewikrTHtkP1hLkJCW0Xn1NrafVeHyA/exec';
-
+        
         const invoiceNumberInput = document.getElementById('invoice-number');
+        const suggestionsContainer = document.getElementById('invoice-suggestions');
         const clientNameInput = document.getElementById('client-name');
         const invoiceDateInput = document.getElementById('invoice-date');
         const clientPhoneInput = document.getElementById('client-phone');
@@ -664,10 +689,12 @@
         const removeRowBtn = document.getElementById('remove-row');
         const saveButton = document.getElementById('save-button');
         const downloadPdfButton = document.getElementById('download-pdf-button');
-        const invoiceNumberList = document.getElementById('invoice-number-list');
         const toggleWatermark = document.getElementById('toggle-watermark');
         const invoiceBody = document.getElementById('invoice-to-print');
-        const satuanOptions = ['pcs', 'lembar', 'lusin','box', 'rim',  'set', 'm', 'm²'];
+        const satuanOptions = ['pcs', 'lembar', 'box', 'rim', 'buku', 'set', 'm', 'm²', 'roll', 'pack', 'kodi', 'lusin'];
+        
+        let savedInvoiceNumbers = [];
+        let isSuggestionClicked = false;
 
         let flatpickrInstance = flatpickr("#invoice-date", { dateFormat: "d/m/Y", defaultDate: "today", allowInput: true });
 
@@ -689,12 +716,14 @@
             itemsTbody.innerHTML = '';
             uangMukaInput.value = '';
             flatpickrInstance.setDate(new Date());
-            addRow();
+            if (itemsTbody.rows.length === 0) {
+                addRow();
+            }
             calculateTotal();
         }
 
         function startNewInvoice() {
-            clearForm(); 
+            clearForm();
             invoiceNumberInput.value = generateInvoiceNumber();
         }
         
@@ -707,7 +736,6 @@
             } else {
                 flatpickrInstance.setDate(new Date());
             }
-
             itemsTbody.innerHTML = '';
             if (data.items && data.items.length > 0) {
                 data.items.forEach(item => {
@@ -717,9 +745,9 @@
                         <td data-label="Nama Pesanan"><input type="text" class="table-input input-nama" value="${item.nama || ''}"></td>
                         <td data-label="Banyak"><input type="number" min="0" class="table-input input-qty cell-center" oninput="calculateTotal()" value="${item.banyak || ''}"></td>
                         <td data-label="Satuan">
-                        <select class="table-input input-satuan cell-center">
-                        ${satuanOptions.map(opt => `<option value="${opt}" ${item.satuan === opt ? 'selected' : ''}>${opt}</option>`).join('')}
-                        </select>
+                            <select class="table-input input-satuan cell-center">
+                                ${satuanOptions.map(opt => `<option value="${opt}" ${item.satuan === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                            </select>
                         </td>
                         <td data-label="Harga Satuan"><input type="text" class="table-input input-price cell-right" oninput="formatInputField(event)" value="${item.harga || ''}"></td>
                         <td data-label="Jumlah" class="cell-right"><span class="total"></span></td>
@@ -733,30 +761,61 @@
         }
 
         function fetchInvoiceData(invoiceNumber) {
-            if (!invoiceNumber || invoiceNumber.length < 5) {
-                startNewInvoice();
-                invoiceNumberInput.value = invoiceNumber;
-                return;
-            };
+            if (!invoiceNumber) return;
             fetch(`${G_SCRIPT_URL}?invoiceNumber=${encodeURIComponent(invoiceNumber)}`)
-                .then(res => {
-                    if (!res.ok) { throw new Error('Network response was not ok'); }
-                    return res.json();
-                })
+                .then(res => res.json())
                 .then(data => {
                     if (data && data.items && data.items.length > 0) {
                         populateForm(data);
-                    } else {
-                        clearForm();
-                        invoiceNumberInput.value = invoiceNumber;
                     }
                 })
-                .catch(error => {
-                    console.error('Gagal mengambil data faktur:', error);
-                    clearForm();
-                    invoiceNumberInput.value = invoiceNumber;
-                });
+                .catch(error => console.error('Gagal mengambil data faktur:', error));
         }
+
+        function showSuggestions(filterText) {
+            suggestionsContainer.innerHTML = '';
+            if (!filterText) {
+                suggestionsContainer.style.display = 'none';
+                return;
+            }
+            const filteredInvoices = savedInvoiceNumbers.filter(num => 
+                num.toLowerCase().includes(filterText.toLowerCase())
+            );
+            if (filteredInvoices.length > 0) {
+                filteredInvoices.forEach(num => {
+                    const item = document.createElement('div');
+                    item.classList.add('suggestion-item');
+                    item.textContent = num;
+                    item.addEventListener('mousedown', () => {
+                        isSuggestionClicked = true;
+                        invoiceNumberInput.value = num;
+                        suggestionsContainer.style.display = 'none';
+                        fetchInvoiceData(num);
+                    });
+                    suggestionsContainer.appendChild(item);
+                });
+                suggestionsContainer.style.display = 'block';
+            } else {
+                suggestionsContainer.style.display = 'none';
+            }
+        }
+
+        invoiceNumberInput.addEventListener('input', () => {
+            showSuggestions(invoiceNumberInput.value);
+        });
+        
+        invoiceNumberInput.addEventListener('focus', () => {
+            isSuggestionClicked = false;
+        });
+
+        invoiceNumberInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                suggestionsContainer.style.display = 'none';
+                if (!isSuggestionClicked && (!invoiceNumberInput.value || !savedInvoiceNumbers.includes(invoiceNumberInput.value))) {
+                    startNewInvoice();
+                }
+            }, 200);
+        });
         
         function formatRupiah(angka) {
             if(isNaN(angka) || angka === 0) return '';
@@ -803,8 +862,9 @@
                 <td data-label="Nama Pesanan"><input type="text" class="table-input input-nama" placeholder="..."></td>
                 <td data-label="Banyak"><input type="number" min="0" class="table-input input-qty cell-center" oninput="calculateTotal()" placeholder="..."></td>
                 <td data-label="Satuan">
-                <select class="table-input input-satuan cell-center">${satuanOptions.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
-                </select>
+                    <select class="table-input input-satuan cell-center">
+                        ${satuanOptions.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                    </select>
                 </td>
                 <td data-label="Harga Satuan"><input type="text" class="table-input input-price cell-right" oninput="formatInputField(event)" placeholder="..."></td>
                 <td data-label="Jumlah" class="cell-right"><span class="total"></span></td>
@@ -819,7 +879,7 @@
             document.querySelectorAll('#invoice-items tr').forEach(row => {
                 const namaPesanan = row.querySelector('.input-nama').value.trim();
                 const banyak = row.querySelector('.input-qty').value.trim();
-                const satuan = row.querySelector('.input-satuan').value.trim(); 
+                const satuan = row.querySelector('.input-satuan').value.trim();
                 const harga = row.querySelector('.input-price').value.trim();
                 if (namaPesanan && banyak && parseFloat(banyak) > 0 && harga && parseRupiah(harga) > 0) {
                     hasValidItem = true;
@@ -866,15 +926,6 @@
                 calculateTotal();
             }
         });
-
-        invoiceNumberInput.addEventListener('change', (e) => {
-            const selectedValue = e.target.value;
-            if(selectedValue) {
-                fetchInvoiceData(selectedValue);
-            } else {
-                startNewInvoice();
-            }
-        });
         
         saveButton.addEventListener('click', (e) => {
             e.preventDefault();
@@ -893,8 +944,11 @@
             const tableControls = document.querySelector('.table-controls');
             const toggleContainer = document.querySelector('.toggle-container')
             const clientName = clientNameInput.value.trim() || 'Customer';
-            const invoiceNumber = invoiceNumberInput.value.replace(/\//g, '-');
-            const fileName = `Faktur - ${clientName} - ${invoiceNumber}.pdf`;
+            const invoiceNumber = (invoiceNumberInput.value || 'Faktur').replace(/\//g, '-');
+            const isLunas = document.getElementById('toggle-watermark').checked;
+            const statusLunas = isLunas ? ' - LUNAS' : '';
+            const fileName = `Faktur${statusLunas} - ${clientName} - ${invoiceNumber}.pdf`;
+    
             const opt = { margin: [1, 1, 1, 1], filename: fileName, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }, pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } };
             
             loadingOverlay.style.display = 'flex';
@@ -933,22 +987,21 @@
                     flatpickrInstance = flatpickr("#invoice-date", { dateFormat: "d/m/Y", defaultDate: "today", allowInput: true });
                     loadingOverlay.style.display = 'none';
                 });
-            }, 100); 
+            }, 100);
         });
 
         fetch(G_SCRIPT_URL)
             .then(res => res.json())
             .then(invoiceNumbers => {
-                invoiceNumberList.innerHTML = '';
-                invoiceNumbers.forEach(num => {
-                    invoiceNumberList.innerHTML += `<option value="${num}">`;
-                });
+                savedInvoiceNumbers = invoiceNumbers;
             })
-            .catch(error => console.error('Gagal memuat daftar faktur:', error));
-
+            .catch(error => {
+                console.error('Gagal memuat daftar faktur:', error);
+            });
+            
         startNewInvoice();
     });
-</script>
+    </script>
     
     <div id="loading-overlay" style="display: none;">
         <div class="spinner"></div>
