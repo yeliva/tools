@@ -929,7 +929,9 @@
         
         saveButton.addEventListener('click', (e) => {
             e.preventDefault();
+            if (confirm("Pastikan semua data sudah benar!")) {
             simpanKeSheet();
+            }
         });
         
         toggleWatermark.addEventListener('change', function() {
@@ -938,6 +940,7 @@
         
         downloadPdfButton.addEventListener('click', function(event) { 
             event.preventDefault();
+            if (confirm("Pastikan semua data sudah benar.")) {
             simpanKeSheet(false);
             const originalElement = document.getElementById('invoice-to-print');
             const loadingOverlay = document.getElementById('loading-overlay');
@@ -988,6 +991,7 @@
                     loadingOverlay.style.display = 'none';
                 });
             }, 100);
+            }
         });
 
         fetch(G_SCRIPT_URL)
