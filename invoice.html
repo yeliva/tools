@@ -941,56 +941,111 @@
         downloadPdfButton.addEventListener('click', function(event) { 
             event.preventDefault();
             if (confirm("Pastikan semua data sudah benar!")) {
-            simpanKeSheet(false);
-            const originalElement = document.getElementById('invoice-to-print');
-            const loadingOverlay = document.getElementById('loading-overlay');
-            const tableControls = document.querySelector('.table-controls');
-            const toggleContainer = document.querySelector('.toggle-container')
-            const clientName = clientNameInput.value.trim() || 'Customer';
-            const invoiceNumber = (invoiceNumberInput.value || 'Faktur').replace(/\//g, '-');
-            const isLunas = document.getElementById('toggle-watermark').checked;
-            const statusLunas = isLunas ? ' - LUNAS' : '';
-            const fileName = `Faktur${statusLunas} - ${clientName} - ${invoiceNumber}.pdf`;
-    
-            const opt = { margin: [1, 1, 1, 1], filename: fileName, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }, pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } };
-            
-            loadingOverlay.style.display = 'flex';
-            
-            setTimeout(() => {
-                const originalDpDisplay = document.getElementById('dp-row').style.display;
-                const originalSisaDisplay = document.getElementById('sisa-row').style.display;
-                const originalTableControlsDisplay = tableControls.style.display;
+                simpanKeSheet(false);
+                const originalElement = document.getElementById('invoice-to-print');
+                const loadingOverlay = document.getElementById('loading-overlay');
+                const tableControls = document.querySelector('.table-controls');
+                const toggleContainer = document.querySelector('.toggle-container');
+                const clientName = clientNameInput.value.trim() || 'Customer';
+                const invoiceNumber = (invoiceNumberInput.value || 'Faktur').replace(/\//g, '-');
+                const isLunas = document.getElementById('toggle-watermark').checked;
+                const statusLunas = isLunas ? ' - LUNAS' : '';
+                const fileName = `Faktur${statusLunas} - ${clientName} - ${invoiceNumber}.pdf`;
+        
+                const opt = { 
+                    margin: [1, 1, 1, 1], 
+                    filename: fileName, 
+                    image: { type: 'jpeg', quality: 0.98 }, 
+                    html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0 }, 
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }, 
+                    pagebreak: { mode: ['css', 'legacy'], before: '.html2pdf__page-break-before' } 
+                };
                 
-                if (flatpickrInstance) flatpickrInstance.destroy();
+                loadingOverlay.style.display = 'flex';
                 
-                tableControls.style.display = 'none';
-                toggleContainer.style.display = 'none';
-                originalElement.classList.add('force-desktop');
+                const originalTable = document.querySelector('.main-table');
+                const tableHeader = originalTable.querySelector('thead').cloneNode(true);
+                const allRows = Array.from(originalTable.querySelectorAll('tbody tr'));
                 
-                const uangMukaValue = parseRupiah(uangMukaInput.value) || 0;
-                if (uangMukaValue === 0) {
-                    document.getElementById('dp-row').style.display = 'none';
-                    document.getElementById('sisa-row').style.display = 'none';
+                
+                const maxRowsPage1 = 11;
+                const maxRowsSubsequent = 15;
+                
+                const splitTableContainer = document.createElement('div');
+                splitTableContainer.id = 'split-table-container';
+                
+                let rowsProcessed = 0;
+                let pageCounter = 1;
+
+                
+                while (rowsProcessed < allRows.length) {
+                    
+                    let currentMaxRows = (pageCounter === 1) ? maxRowsPage1 : maxRowsSubsequent;
+
+                    
+                    if (pageCounter > 1) {
+                        let pageBreakDiv = document.createElement('div');
+                        pageBreakDiv.className = 'html2pdf__page-break-before';
+                        splitTableContainer.appendChild(pageBreakDiv);
+                    }
+
+                    
+                    let currentTable = document.createElement('table');
+                    currentTable.className = 'main-table';
+                    currentTable.appendChild(tableHeader.cloneNode(true));
+                    let currentTbody = document.createElement('tbody');
+                    currentTable.appendChild(currentTbody);
+                    splitTableContainer.appendChild(currentTable);
+                    
+                    
+                    for (let i = 0; i < currentMaxRows && rowsProcessed < allRows.length; i++) {
+                        currentTbody.appendChild(allRows[rowsProcessed].cloneNode(true));
+                        rowsProcessed++;
+                    }
+                    
+                    pageCounter++;
                 }
                 
-                const inputsToClean = document.querySelectorAll('.dotted-input-container input');
-                inputsToClean.forEach(input => input.style.borderBottom = 'none');
                 
-                html2pdf().from(originalElement).set(opt).save()
-                .then(() => {
-                    Toastify({ text: "✔ Faktur berhasil diunduh!", duration: 3000, gravity: "top", position: "center", style: { background: "linear-gradient(to right, #00b09b, #96c93d)" } }).showToast();
-                })
-                .finally(() => {
-                    originalElement.classList.remove('force-desktop');
-                    document.getElementById('dp-row').style.display = originalDpDisplay;
-                    document.getElementById('sisa-row').style.display = originalSisaDisplay;
-                    inputsToClean.forEach(input => input.style.borderBottom = '');
-                    tableControls.style.display = 'flex';
-                    toggleContainer.style.display = 'inline-flex';
-                    flatpickrInstance = flatpickr("#invoice-date", { dateFormat: "d/m/Y", defaultDate: "today", allowInput: true });
-                    loadingOverlay.style.display = 'none';
-                });
-            }, 100);
+                originalTable.style.display = 'none';
+                originalTable.parentNode.insertBefore(splitTableContainer, originalTable.nextSibling);
+
+                
+                
+                setTimeout(() => {
+                    const originalDpDisplay = document.getElementById('dp-row').style.display;
+                    const originalSisaDisplay = document.getElementById('sisa-row').style.display;
+                    if (flatpickrInstance) flatpickrInstance.destroy();
+                    tableControls.style.display = 'none';
+                    toggleContainer.style.display = 'none';
+                    originalElement.classList.add('force-desktop');
+                    const uangMukaValue = parseRupiah(uangMukaInput.value) || 0;
+                    if (uangMukaValue === 0) {
+                        document.getElementById('dp-row').style.display = 'none';
+                        document.getElementById('sisa-row').style.display = 'none';
+                    }
+                    const inputsToClean = document.querySelectorAll('.dotted-input-container input');
+                    inputsToClean.forEach(input => input.style.borderBottom = 'none');
+                    
+                    html2pdf().from(originalElement).set(opt).save()
+                    .then(() => {
+                        Toastify({ text: "✔ Faktur berhasil diunduh!", duration: 3000, gravity: "top", position: "center", style: { background: "linear-gradient(to right, #00b09b, #96c93d)" } }).showToast();
+                    })
+                    .finally(() => {
+                        originalElement.classList.remove('force-desktop');
+                        document.getElementById('dp-row').style.display = originalDpDisplay;
+                        document.getElementById('sisa-row').style.display = originalSisaDisplay;
+                        inputsToClean.forEach(input => input.style.borderBottom = '');
+                        tableControls.style.display = 'flex';
+                        toggleContainer.style.display = 'inline-flex';
+                        flatpickrInstance = flatpickr("#invoice-date", { dateFormat: "d/m/Y", defaultDate: "today", allowInput: true });
+                        loadingOverlay.style.display = 'none';
+
+                        // PENTING: Pulihkan tampilan
+                        splitTableContainer.remove();
+                        originalTable.style.display = '';
+                    });
+                }, 100);
             }
         });
 
